@@ -67,11 +67,6 @@ namespace UI
             gridVendas.ItemsSource = await _vModel.ListarVendas();
         }
 
-        private void BtnFecharSistema(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private void btnExcluirProduto(object sender, RoutedEventArgs e)
         {
             var produto = (Produto)gridProdutos.SelectedItem;

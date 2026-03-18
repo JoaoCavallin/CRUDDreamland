@@ -56,7 +56,7 @@
                             </Trigger>
 
                             <!-- Hover -->
-                            <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger Property="IsMouseDirectlyOver" Value="True">
                                 <Setter TargetName="border"
                                 Property="Background"
                                 Value="#B7ACFF"/>
@@ -125,6 +125,7 @@
                     </ControlTemplate>
 
                 </Setter.Value>
+                
             </Setter>
 
         </Style>

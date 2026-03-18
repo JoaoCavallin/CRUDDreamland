@@ -58,18 +58,6 @@
 
                     </StackPanel>
 
-                    <Button
-                        Grid.Column="1"
-                        Content="✕ Fechar Sistema"
-                        Width="150"
-                        Height="35"
-                        Background="#9D8BFF"
-                        Foreground="White"
-                        BorderThickness="0"
-                        FontWeight="SemiBold"
-                        Cursor="Hand"
-                        Click="BtnFecharSistema"/>
-
                 </Grid>
 
                 <!-- Titulo -->
