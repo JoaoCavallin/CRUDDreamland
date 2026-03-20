@@ -53,12 +53,13 @@ CREATE TABLE Produtos (
 CREATE TABLE Vendas (
     IdVenda INT PRIMARY KEY IDENTITY(1,1),
 
+    ClienteDocumento NVARCHAR(20) NOT NULL,
+
+    ClienteNome NVARCHAR(40) NOT NULL,
+
     DataVenda DATETIME DEFAULT GETDATE(),
 
     ValorTotal DECIMAL(10,2) NOT NULL,
-
-    UsuarioId INT,
-    FOREIGN KEY (UsuarioId) REFERENCES Usuarios(IdUsuario),
 
     FormaPagamento NVARCHAR(50),
 
