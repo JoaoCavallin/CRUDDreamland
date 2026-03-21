@@ -12,14 +12,14 @@ namespace UI.Model
 
         public async Task<bool> CriarUsuario(string nome, string email, string senha)
         {
-            Usuario novoUsuario = new Usuario(nome, email, Codificar(senha));
+            Usuarios novoUsuario = new Usuarios(nome, email, Codificar(senha));
             return await _usuarioRepositorio.AddIfEmailNotExist(novoUsuario);
         }
 
         public async Task<string> Entrar(string email, string senha)
         {
-            Usuario login = new Usuario(email, Codificar(senha));
-            Usuario usuario = await _usuarioRepositorio.GetByEmailSenhaAsync(login);
+            Usuarios login = new Usuarios(email, Codificar(senha));
+            Usuarios usuario = await _usuarioRepositorio.GetByEmailSenhaAsync(login);
 
             if (usuario != null)
             {

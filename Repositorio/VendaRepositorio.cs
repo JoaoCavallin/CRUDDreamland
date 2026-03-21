@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 
 namespace Repositorio
 {
-    public class VendaRepositorio : IRepositorio<Venda>
+    public class VendaRepositorio : IRepositorio<Vendas>
     {
         private readonly Context _context = new Context();
 
-        public void Add(Venda venda)
+        public void Add(Vendas venda)
         {
             _context.Vendas.Add(venda);
         }
 
-        public void Delete(Venda venda)
+        public void Delete(Vendas venda)
         {
             _context.Vendas.Remove(venda);
         }
 
-        public void Update(Venda venda)
+        public void Update(Vendas venda)
         {
             _context.Vendas.Update(venda);
         }
@@ -29,14 +29,14 @@ namespace Repositorio
             return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public async Task<Venda[]> GetAllAsync()
+        public async Task<Vendas[]> GetAllAsync()
         {
             return await _context.Vendas.ToArrayAsync();
         }
 
-        public async Task<Venda> GetByIdAsync(int vendaId)
+        public async Task<Vendas> GetByIdAsync(int vendaId)
         {
-            return await _context.Vendas.Where(V => V.Id == vendaId).FirstOrDefaultAsync();
+            return await _context.Vendas.Where(V => V.IdVenda == vendaId).FirstOrDefaultAsync();
         }
     }
 }

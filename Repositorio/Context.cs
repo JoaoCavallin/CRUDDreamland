@@ -5,33 +5,32 @@ namespace Repositorio
 {
     public class Context : DbContext
     {
-        public DbSet<Produto> Produtos { get; set; }
-        public DbSet<Venda> Vendas { get; set; }
-        public DbSet<VendaProduto> VendaProdutos { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Produtos> Produtos { get; set; }
+        public DbSet<Vendas> Vendas { get; set; }
+        public DbSet<ProdutoVendas> ProdutoVendas { get; set; }
+        public DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=TQR216777\SQLEXPRESS;Database=WPFdb;User Id=tds;Password=tds123;");
+            optionsBuilder.UseSqlServer(@"Server=TQR216777\SQLEXPRESS;Database=DreamLand;User Id=tds;Password=tds123;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<VendaProduto>(vendaProduto =>
+            modelBuilder.Entity<ProdutoVendas>(entity =>
             {
+                entity.HasKey(vp => vp.IdProdutoVenda);
 
-                vendaProduto.HasKey(vp => new { vp.VendaId, vp.ProdutoId });
+                entity.HasOne(vp => vp.Produto)
+                    .WithMany(p => p.ProdutoVendas)
+                    .HasForeignKey(vp => vp.ProdutoId)
+                    .IsRequired();
 
-                vendaProduto.HasOne(vp => vp.Produto)
-                            .WithMany(p => p.VendaProdutos)
-                            .HasForeignKey(vp => vp.ProdutoId)
-                            .IsRequired();
-                    
-                vendaProduto.HasOne(vp => vp.Venda)
-                            .WithMany(v => v.VendaProdutos)
-                            .HasForeignKey(vp => vp.VendaId)
-                            .IsRequired();
+                entity.HasOne(vp => vp.Venda)
+                    .WithMany(v => v.ProdutoVendas)
+                    .HasForeignKey(vp => vp.VendaId)
+                    .IsRequired();
             });
 
         }

@@ -12,7 +12,7 @@ namespace UI.Model
     {
         private ProdutoRepositorio _produtoRepositorio = new ProdutoRepositorio();
 
-        public async Task<Produto[]> ListarProdutos()
+        public async Task<Produtos[]> ListarProdutos()
         {
             return await _produtoRepositorio.GetAllAsync();
         }
@@ -28,7 +28,7 @@ namespace UI.Model
             ProdutoGrupo produtoGrupo
         )
         {
-            Produto produto = new Produto(descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
+            Produtos produto = new Produtos(descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
 
             _produtoRepositorio.Add(produto);
             await _produtoRepositorio.SaveChangesAsync();
@@ -38,7 +38,7 @@ namespace UI.Model
         {
             using (var context = new Context())
             {
-                var produto = context.Produtos.FirstOrDefault(p => p.Id == id);
+                var produto = context.Produtos.FirstOrDefault(p => p.IdProduto == id);
 
                 if (produto != null)
                 {
@@ -64,7 +64,7 @@ namespace UI.Model
             ProdutoGrupo produtoGrupo
         )
         {
-            Produto atualizarProduto = new Produto(Id, descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
+            Produtos atualizarProduto = new Produtos(Id, descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
 
             _produtoRepositorio.Update(atualizarProduto);
             await _produtoRepositorio.SaveChangesAsync();

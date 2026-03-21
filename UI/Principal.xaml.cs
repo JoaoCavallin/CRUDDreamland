@@ -22,7 +22,7 @@ namespace UI
 
         private void btnEditarProduto(object sender, RoutedEventArgs e)
         {
-            Produto produto = (Produto)gridProdutos.SelectedItem;
+            Produtos produto = (Produtos)gridProdutos.SelectedItem;
 
             if (produto != null)
             {
@@ -69,7 +69,7 @@ namespace UI
 
         private void btnExcluirProduto(object sender, RoutedEventArgs e)
         {
-            var produto = (Produto)gridProdutos.SelectedItem;
+            var produto = (Produtos)gridProdutos.SelectedItem;
             if (produto != null)
             {
                 ProdutoModel produtoI = new ProdutoModel();

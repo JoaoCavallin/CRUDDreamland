@@ -8,19 +8,19 @@ namespace Repositorio
     {
         private readonly Context _context = new Context();
 
-        public void Add(VendaProduto venda)
+        public void Add(ProdutoVendas venda)
         {
-            _context.VendaProdutos.Add(venda);
+            _context.ProdutoVendas.Add(venda);
         }
 
-        public void AddRange(List<VendaProduto> VendaProduto)
+        public void AddRange(List<ProdutoVendas> VendaProduto)
         {
-            _context.VendaProdutos.AddRange(VendaProduto);
+            _context.ProdutoVendas.AddRange(VendaProduto);
         }
 
-        public void Delete(VendaProduto venda)
+        public void Delete(ProdutoVendas venda)
         {
-            _context.VendaProdutos.Remove(venda);
+            _context.ProdutoVendas.Remove(venda);
         }
 
         public async Task<bool> SaveChangesAsync()

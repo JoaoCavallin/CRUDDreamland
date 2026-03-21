@@ -12,28 +12,28 @@ namespace UI.Model
         private ProdutoRepositorio _produtoRepositorio = new ProdutoRepositorio();
         private VendaRepositorio _vendaRepositorio = new VendaRepositorio();
 
-        public async Task<Produto> ProcurarProduto(int id)
+        public async Task<Produtos> ProcurarProduto(int id)
         {
             return await _produtoRepositorio.GetByIdAsync(id);
         }
 
-        public async Task<Venda[]> ListarVendas()
+        public async Task<Vendas[]> ListarVendas()
         {
             return await _vendaRepositorio.GetAllAsync();
         }
 
-        public async Task<bool> NovaVenda(string clienteDocumento, string clienteNome, decimal total, string obs, List<Produto> produtos)
+        public async Task<bool> NovaVenda(string clienteDocumento, string clienteNome, decimal total, string obs, List<Produtos> produtos)
         {
-            List<VendaProduto> vendaProdutos = new List<VendaProduto>();
-            Venda venda = new Venda(clienteDocumento, clienteNome, total, obs, DateTime.Now);
+            List<ProdutoVendas> vendaProdutos = new List<ProdutoVendas>();
+            Vendas venda = new Vendas(clienteDocumento, clienteNome, total, obs, DateTime.Now);
 
             _vendaRepositorio.Add(venda);
             await _vendaRepositorio.SaveChangesAsync();
 
-            foreach (Produto produto in produtos)
+            foreach (Produtos produto in produtos)
             {
                 vendaProdutos.Add(
-                    new VendaProduto { PrecoVenda = venda.Total, ProdutoId = produto.Id, VendaId = venda.Id }
+                    new ProdutoVendas { PrecoUnitario = venda.Total, ProdutoId = produto.IdProduto, VendaId = venda.IdVenda }
                     );
             }
 

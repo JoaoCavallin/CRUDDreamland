@@ -10,7 +10,7 @@ namespace UI
     public partial class NovoProduto : Window
     {
         ProdutoModel _pModel = new ProdutoModel();
-        private Produto _produto;
+        private Produtos _produto;
 
         public NovoProduto()
         {
@@ -20,7 +20,7 @@ namespace UI
             boxUnMedida.ItemsSource = Enum.GetValues(typeof(UnidadeMedida)).Cast<UnidadeMedida>();
         }
 
-        public NovoProduto(Produto produto) : this()
+        public NovoProduto(Produtos produto) : this()
         {
             _produto = produto;
 
@@ -58,7 +58,7 @@ namespace UI
             {
                 _pModel.EditarProduto
                     (
-                        _produto.Id,
+                        _produto.IdProduto,
                         boxDescricao.Text,
                         Enum.Parse<UnidadeMedida>(boxUnMedida.Text),
                         boxCodBarras.Text,

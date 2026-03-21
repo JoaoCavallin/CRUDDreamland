@@ -10,7 +10,7 @@ namespace UI
     public partial class NovaVenda : Window
     {
         VendaModel vModel = new VendaModel();
-        List<Produto> produtos = new List<Produto>();
+        List<Produtos> produtos = new List<Produtos>();
 
         public NovaVenda(string nomeCliente, string cpfCliente)
         {
@@ -42,10 +42,10 @@ namespace UI
             if (e.Key == Key.Enter)
             {
                 int codigoProduto = int.Parse(boxCodProduto.Text);
-                Produto produto = await vModel.ProcurarProduto(codigoProduto);
+                Produtos produto = await vModel.ProcurarProduto(codigoProduto);
                 produtos.Add(produto);
 
-                NovaVendaCollection vendas = new NovaVendaCollection(produto.Id, produto.Descricao, produto.UnidadeDeMedida, produto.PrecoVenda, int.Parse(boxQuantidade.Text));
+                NovaVendaCollection vendas = new NovaVendaCollection(produto.IdProduto, produto.Descricao, produto.UnidadeDeMedida, produto.PrecoVenda, int.Parse(boxQuantidade.Text));
 
                 gridVendaProduto.Items.Add(vendas);
 

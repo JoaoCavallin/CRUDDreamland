@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 
 namespace Repositorio
 {
-    public class UsuarioRepositorio : IRepositorio<Usuario>
+    public class UsuarioRepositorio : IRepositorio<Usuarios>
     {
         private readonly Context _context = new Context();
 
-        public void Add(Usuario usuario)
+        public void Add(Usuarios usuario)
         {
             _context.Usuarios.Add(usuario);
         }
 
-        public void Delete(Usuario usuario)
+        public void Delete(Usuarios usuario)
         {
             _context.Usuarios.Remove(usuario);
         }
 
-        public void Update(Usuario usuario)
+        public void Update(Usuarios usuario)
         {
             _context.Usuarios.Update(usuario);
         }
@@ -29,19 +29,19 @@ namespace Repositorio
             return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public async Task<Usuario[]> GetAllAsync()
+        public async Task<Usuarios[]> GetAllAsync()
         {
             return await _context.Usuarios.ToArrayAsync();
         }
 
-        public async Task<Usuario> GetByIdAsync(int usuarioId)
+        public async Task<Usuarios> GetByIdAsync(int usuarioId)
         {
-            return await _context.Usuarios.Where(U => U.Id == usuarioId).FirstOrDefaultAsync();
+            return await _context.Usuarios.Where(U => U.IdUsuario == usuarioId).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> AddIfEmailNotExist(Usuario usuario)
+        public async Task<bool> AddIfEmailNotExist(Usuarios usuario)
         {
-            Usuario emailexist = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
+            Usuarios emailexist = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
             if (emailexist == null)
             {
                 await _context.Usuarios.AddAsync(usuario);
@@ -53,9 +53,9 @@ namespace Repositorio
             }
         }
 
-        public async Task<Usuario> GetByEmailSenhaAsync(Usuario usuario)
+        public async Task<Usuarios> GetByEmailSenhaAsync(Usuarios usuario)
         {
-            Usuario user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email && u.Senha == usuario.Senha);
+            Usuarios user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email && u.Senha == usuario.Senha);
 
             return user;
         }
