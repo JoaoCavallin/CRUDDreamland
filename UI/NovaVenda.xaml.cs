@@ -11,13 +11,26 @@ namespace UI
     {
         VendaModel vModel = new VendaModel();
         List<Produtos> produtos = new List<Produtos>();
+        private int idVendaEdicao = -1; 
 
         public NovaVenda(string nomeCliente, string cpfCliente)
         {
             InitializeComponent();
             blockNomeCliente.Text = nomeCliente;
             blockCpfCliente.Text = cpfCliente;
+        }
 
+        public NovaVenda(int idVenda, string nomeCliente, string cpfCliente, decimal valorTotal, List<Produtos> itens = null)
+        {
+            InitializeComponent();
+            idVendaEdicao = idVenda;
+            blockNomeCliente.Text = nomeCliente;
+            blockCpfCliente.Text = cpfCliente;
+            blockTotal.Text = valorTotal.ToString();
+            produtos = itens != null ? new List<Produtos>(itens) : new List<Produtos>();
+            ConfirmarVenda.Content = "Atualizar Venda";
+
+            // Se tiver coleção com quantidades, preencha `gridVendaProduto` aqui
         }
 
         private async void boxCodProduto_KeyUp(object sender, KeyEventArgs e)
@@ -56,30 +69,51 @@ namespace UI
 
         private async void btnConfirmarVenda(object sender, RoutedEventArgs e)
         {
-            bool status = await vModel.NovaVenda(blockCpfCliente.Text, blockNomeCliente.Text, decimal.Parse(blockTotal.Text), produtos);
-
-            if (status == true)
+            decimal total;
+            if (!decimal.TryParse(blockTotal.Text, out total))
             {
-                MessageBox.Show("Venda cadastrada com sucesso!");
-                Close();
+                MessageBox.Show("Total inválido.");
+                return;
+            }
 
-                MessageBoxResult result = MessageBox.Show("Deseja incluir nome e cpf do cliente?", "Nome e CPF do Cliente", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                switch (result)
+            bool status;
+            if (idVendaEdicao == -1)
+            {
+                // criar nova venda
+                status = await vModel.NovaVenda(blockCpfCliente.Text, blockNomeCliente.Text, total, produtos);
+                if (status)
                 {
-                    case MessageBoxResult.Yes:
-                        NomeCpf nomeCpf = new NomeCpf();
-                        nomeCpf.ShowDialog();
-                        break;
-
-                    case MessageBoxResult.No:
-                        NovaVenda novaVenda = new NovaVenda("Não informado", "Não informado");
-                        novaVenda.ShowDialog();
-                        break;
+                    MessageBox.Show("Venda cadastrada com sucesso!");
+                    Close();
+                    MessageBoxResult result = MessageBox.Show("Deseja incluir nome e cpf do cliente?", "Nome e CPF do Cliente", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    switch (result)
+                    {
+                        case MessageBoxResult.Yes:
+                            new NomeCpf().ShowDialog();
+                            break;
+                        case MessageBoxResult.No:
+                            new NovaVenda("Não informado", "Não informado").ShowDialog();
+                            break;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao cadastrar venda!", "ERRO", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                MessageBox.Show("Erro ao cadastrar venda!", "ERRO", MessageBoxButton.OK, MessageBoxImage.Error);
+                // editar venda existente
+                status = await vModel.EditarVenda(idVendaEdicao, blockCpfCliente.Text, blockNomeCliente.Text, total, produtos);
+                if (status)
+                {
+                    MessageBox.Show("Venda atualizada com sucesso!");
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao atualizar venda!", "ERRO", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }

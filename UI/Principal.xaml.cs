@@ -141,30 +141,30 @@ namespace UI
             var confirm = MessageBox.Show(
                 $"Deseja excluir a venda ID {venda.IdVenda}?",
                 "Confirmação",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                MessageBoxButton.YesNo);
 
             if (confirm != MessageBoxResult.Yes)
                 return;
 
             try
             {
+                btnExcluirVenda.IsEnabled = false;
+
                 var sucesso = await _vModel.ExcluirVenda(venda.IdVenda);
 
                 if (sucesso)
                 {
-                    MessageBox.Show("Venda excluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                    MessageBox.Show("Venda excluída com sucesso!");
                     BtnConsultarVenda(null, null);
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao excluir venda!", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Erro ao excluir venda!");
                 }
             }
-            catch (Exception ex)
+            finally
             {
-                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                btnExcluirVenda.IsEnabled = true;
             }
         }
 

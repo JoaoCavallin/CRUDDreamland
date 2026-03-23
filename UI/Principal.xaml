@@ -141,7 +141,7 @@
                                 <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarVenda"/>
                                 <Button Content="Nova Venda" Width="140" Margin="10" Click="BtnNovaVendaDialog"/>
                                 <Button Content="Editar" Width="140" Margin="10" Click="BtnEditarVenda"/>
-                                <Button Content="Excluir" Width="140" Margin="10" Click="BtnExcluirVenda"/>
+                                <Button Name="btnExcluirVenda" Content="Excluir" Width="140" Margin="10" Click="BtnExcluirVenda"/>
 
                             </StackPanel>
 

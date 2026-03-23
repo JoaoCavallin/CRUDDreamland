@@ -60,7 +60,6 @@ namespace UI.Model
         {
             try
             {
-                // 🔥 1. Buscar itens da venda (ProdutoVendas)
                 var itensVenda = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
 
                 if (itensVenda != null && itensVenda.Count > 0)
@@ -69,16 +68,65 @@ namespace UI.Model
                     await _vendaProdutoRepositorio.SaveChangesAsync();
                 }
 
-                // 🔥 2. Buscar a venda
                 var venda = await _vendaRepositorio.GetByIdAsync(idVenda);
 
                 if (venda == null)
                     return false;
 
-                // 🔥 3. Remover venda
                 _vendaRepositorio.Remove(venda);
 
                 return await _vendaRepositorio.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> EditarVenda(int idVenda, string clienteDocumento, string clienteNome, decimal valorTotal, List<Produtos> produtos, string formaPagamento = null, string statusVenda = null)
+        {
+            try
+            {
+                var vendaExistente = await _vendaRepositorio.GetByIdAsync(idVenda);
+
+                if (vendaExistente == null)
+                    return false;
+
+                vendaExistente.ClienteDocumento = clienteDocumento;
+                vendaExistente.ClienteNome = clienteNome;
+                vendaExistente.ValorTotal = valorTotal;
+                vendaExistente.FormaPagamento = formaPagamento;
+                vendaExistente.StatusVenda = string.IsNullOrEmpty(statusVenda) ? "Concluida" : statusVenda;
+
+                _vendaRepositorio.Update(vendaExistente);
+                await _vendaRepositorio.SaveChangesAsync();
+
+                var itensVendaAntigos = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
+                if (itensVendaAntigos != null && itensVendaAntigos.Count > 0)
+                {
+                    _vendaProdutoRepositorio.RemoveRange(itensVendaAntigos);
+                    await _vendaProdutoRepositorio.SaveChangesAsync();
+                }
+
+                List<ProdutoVendas> vendaProdutosNovos = new List<ProdutoVendas>();
+                foreach (Produtos produto in produtos)
+                {
+                    var quantidade = 1;
+                    var precoUnitario = produto.Preco;
+                    var subtotal = precoUnitario * quantidade;
+
+                    vendaProdutosNovos.Add(new ProdutoVendas
+                    {
+                        ProdutoId = produto.IdProduto,
+                        VendaId = idVenda,
+                        Quantidade = quantidade,
+                        PrecoUnitario = precoUnitario,
+                        Subtotal = subtotal
+                    });
+                }
+
+                _vendaProdutoRepositorio.AddRange(vendaProdutosNovos);
+                return await _vendaProdutoRepositorio.SaveChangesAsync();
             }
             catch (Exception)
             {

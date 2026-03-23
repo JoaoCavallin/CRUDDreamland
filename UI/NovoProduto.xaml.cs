@@ -36,7 +36,6 @@ namespace UI
 
                 boxAtivo.IsChecked = _produto.Ativo;
 
-                // Setar enums no ComboBox
                 if (!string.IsNullOrEmpty(_produto.Categoria))
                     boxCategoria.SelectedItem = Enum.Parse(typeof(CategoriaProduto), _produto.Categoria);
 
@@ -99,7 +98,6 @@ namespace UI
             }
             else
             {
-                //  EDITAR PRODUTO
                 _pModel.EditarProduto(
                     id: _produto.IdProduto,
                     nome: boxNome.Text,
