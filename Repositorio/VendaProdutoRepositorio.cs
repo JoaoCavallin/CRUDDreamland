@@ -1,5 +1,8 @@
 ﻿using Dominio;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repositorio
@@ -27,5 +30,17 @@ namespace Repositorio
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
+        public async Task<List<ProdutoVendas>> GetByVendaIdAsync(int idVenda)
+        {
+            return await _context.ProdutoVendas
+                .Where(p => p.VendaId == idVenda)
+                .ToListAsync();
+        }
+
+        public void RemoveRange(List<ProdutoVendas> itens)
+        {
+            _context.ProdutoVendas.RemoveRange(itens);
+        }
+
     }
 }

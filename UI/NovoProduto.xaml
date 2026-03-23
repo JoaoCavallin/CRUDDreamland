@@ -1,37 +1,96 @@
 ﻿<Window x:Class="UI.NovoProduto"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UI"
-        mc:Ignorable="d" 
-        
-        Height="350" Width="675" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid  >
+        Title="Novo Produto"
+        Height="500" Width="720"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid Margin="20">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="85*"/>
-            <RowDefinition Height="71*"/>
-            <RowDefinition Height="80*"/>
-            <RowDefinition Height="80*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70*"/>
-            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <CheckBox Name="boxAtivo" Content="Produto Ativo" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="31,53,0,0" VerticalAlignment="Top"/>
-        <ComboBox Name="boxGrupo" HorizontalAlignment="Left" FontSize="16" Margin="31,38,0,0" VerticalAlignment="Top" Width="156" Grid.Row="1"/>
-        <Label Content="Descrição"  HorizontalAlignment="Left" Margin="23,20,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Name="boxDescricao" MaxLength="30" HorizontalAlignment="Left"  Margin="23,50,0,2" TextWrapping="NoWrap" VerticalAlignment="Top" Width="396" Grid.Column="1"/>
-        <Label Content="Código de Barras" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <TextBox Name="boxCodBarras" MaxLength="30" HorizontalAlignment="Left" Margin="23,40,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="397" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="Preço de Custo" HorizontalAlignment="Left" Margin="23,8,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
-        <TextBox Name="boxPrecoCusto" MaxLength="30" HorizontalAlignment="Left"  Margin="23,40,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="170" Grid.Column="1" Grid.Row="2"/>
-        <Label Content="Preço de Venda" FontSize="14" HorizontalAlignment="Left" Margin="249,8,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
-        <TextBox Name="boxPrecoVenda" MaxLength="30" HorizontalAlignment="Left" Margin="249,40,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="170" Grid.Column="1" Grid.Row="2"/>
-        <ComboBox Name="boxUnMedida" HorizontalAlignment="Left" FontSize="16" Margin="31,40,0,0" VerticalAlignment="Top" Width="156" Grid.Row="2"/>
-        <Label Content="Grupo" FontSize="14" HorizontalAlignment="Left" Margin="31,7,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <Label Content="Unidade de Medida" HorizontalAlignment="Left" Margin="31,8,0,0" VerticalAlignment="Top" Grid.Row="2"/>
-        <Button Content="Confirmar" HorizontalAlignment="Left" Margin="249,20.5,0,0" VerticalAlignment="Top" Width="170" Grid.Column="1" Grid.Row="3" Click="btnConfirmarProduto"/>
-        <Button Content="Cancelar" IsCancel="True"  Grid.Column="1" HorizontalAlignment="Left" Margin="33,20,0,0" Grid.Row="3" VerticalAlignment="Top" Width="170"/>
+
+        <!-- NOME -->
+        <Label Content="Nome"/>
+        <TextBox Name="boxNome" Grid.Row="1" Margin="0,5,10,10"/>
+
+        <!-- MARCA -->
+        <Label Content="Marca" Grid.Column="1"/>
+        <TextBox Name="boxMarca" Grid.Row="1" Grid.Column="1" Margin="0,5,0,10"/>
+
+        <!-- DESCRIÇÃO -->
+        <Label Content="Descrição" Grid.Row="2"/>
+        <TextBox Name="boxDescricao" Grid.Row="3" Margin="0,5,10,10"/>
+
+        <!-- CÓDIGO DE BARRAS -->
+        <Label Content="Código de Barras" Grid.Row="2" Grid.Column="1"/>
+        <TextBox Name="boxCodBarras" Grid.Row="3" Grid.Column="1" Margin="0,5,0,10"/>
+
+        <!-- PREÇOS -->
+        <Label Content="Preço de Venda" Grid.Row="4"/>
+        <TextBox Name="boxPrecoVenda" Grid.Row="5" Margin="0,5,10,10"/>
+
+        <Label Content="Preço de Custo" Grid.Row="4" Grid.Column="1"/>
+        <TextBox Name="boxPrecoCusto" Grid.Row="5" Grid.Column="1" Margin="0,5,0,10"/>
+
+        <!-- ENUMS -->
+        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10">
+
+            <StackPanel Width="200" Margin="0,0,10,0">
+                <Label Content="Categoria"/>
+                <ComboBox Name="boxCategoria"/>
+            </StackPanel>
+
+            <StackPanel Width="200" Margin="0,0,10,0">
+                <Label Content="Gênero"/>
+                <ComboBox Name="boxGenero"/>
+            </StackPanel>
+
+            <StackPanel Width="200">
+                <Label Content="Condição"/>
+                <ComboBox Name="boxCondicao"/>
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- ATIVO + BOTÕES -->
+        <Grid Grid.Row="7" Grid.ColumnSpan="2" Margin="0,20,0,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Name="boxAtivo"
+                      Content="Produto Ativo"
+                      VerticalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+
+                <Button Content="Cancelar"
+                        Width="120"
+                        Margin="0,0,10,0"
+                        IsCancel="True"/>
+
+                <Button Content="Confirmar"
+                        Width="120"
+                        Click="btnConfirmarProduto"/>
+            </StackPanel>
+
+        </Grid>
+
     </Grid>
 </Window>

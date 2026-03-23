@@ -1,16 +1,9 @@
 ﻿<Window x:Class="UI.Principal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UI"
-        mc:Ignorable="d"
-        MinHeight="720"
-        MinWidth="1024"
-        Height="720"
-        Width="1024"
-        WindowStartupLocation="CenterScreen"
-        Title="DreamLand">
+        Title="DreamLand"
+        Height="720" Width="1024"
+        WindowStartupLocation="CenterScreen">
 
     <Grid>
 
@@ -19,13 +12,7 @@
             <ImageBrush ImageSource="/Copy of DreamLand.png"/>
         </Grid.Background>
 
-        <!-- Card principal -->
-        <Border
-            Margin="25"
-            Padding="20"
-            CornerRadius="18"
-            Background="Transparent"
-            Opacity="0.97">
+        <Border Margin="25" Padding="20" CornerRadius="18" Background="Transparent" Opacity="0.95">
 
             <Grid>
 
@@ -35,133 +22,112 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Barra superior -->
-                <Grid Grid.Row="0">
+                <!-- Usuário -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Usuário: "/>
+                    <TextBlock Name="BoxUsuarioAtual" Text="Admin" FontWeight="Bold"/>
+                </StackPanel>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                <!-- Logo -->
+                <Image Source="/DreamLand__2_-removebg-preview.png"
+                       Height="80"
+                       HorizontalAlignment="Center"
+                       Margin="0,20,0,10"
+                       Grid.Row="1"/>
 
-                    <StackPanel Orientation="Horizontal">
+                <!-- TABS -->
+                <TabControl Grid.Row="2" TabStripPlacement="Left" Background="Transparent" >
 
-                        <TextBlock
-                            Text="Usuário Atual:"
-                            FontWeight="SemiBold"
-                            Margin="0,0,8,0"/>
-
-                        <TextBlock
-                            Name="BoxUsuarioAtual"
-                            Text="NOME USUARIO CONECTADO"
-                            FontWeight="Bold"
-                            Foreground="#5A4DCC"/>
-
-                    </StackPanel>
-
-                </Grid>
-
-                <!-- Titulo -->
-                <Image
-                 Source="/DreamLand__2_-removebg-preview.png"
-                 Height="80"
-                 HorizontalAlignment="Center"
-                 Margin="0,20,0,10"/>
-
-                <!-- Tabs -->
-                <TabControl
-                    Grid.Row="2"
-                    TabStripPlacement="Left"
-                    Background="Transparent"
-                    BorderThickness="0">
-
-                    <!-- TAB PRODUTO -->
-                    <TabItem Header="Produto" FontSize="18" FontWeight="Bold">
+                    <!-- ================= PRODUTOS ================= -->
+                    <TabItem Header="Produtos">
 
                         <Grid Margin="10">
 
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
+                            <!-- Busca -->
+                            <TextBox Name="boxBuscaProduto"
+                                     Width="250"
+                                     Margin="10"
+                                     TextChanged="BuscarProduto"/>
+
                             <!-- Botões -->
-                            <StackPanel
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Grid.Row="1">
 
-                                <Button
-                                    Content="Consultar Produtos"
-                                    Width="160"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="BtnConsultarProduto"/>
-
-                                <Button
-                                    Content="Excluir Produto"
-                                    Width="140"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="btnExcluirProduto"/>
-
-                                <Button
-                                    Content="Editar Produto"
-                                    Width="140"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="btnEditarProduto"/>
-
-                                <Button
-                                    Content="Cadastrar Produto"
-                                    Width="160"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="BtnCadastroProduto"/>
+                                <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarProduto"/>
+                                <Button Content="Cadastrar" Width="140" Margin="10" Click="BtnCadastroProduto"/>
+                                <Button Content="Editar" Width="140" Margin="10" Click="btnEditarProduto"/>
+                                <Button Content="Excluir" Width="140" Margin="10" Click="btnExcluirProduto"/>
 
                             </StackPanel>
 
-                            <!-- Grid -->
-                            <DataGrid
-                                Name="gridProdutos"
-                                Grid.Row="1"
-                                AutoGenerateColumns="False"
-                                RowHeight="32"
-                                FontSize="14"
-                                HeadersVisibility="Column"
-                                BorderThickness="0"
-                                Background="Transparent">
+                            <!-- GRID -->
+                            <DataGrid Name="gridProdutos"
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      RowHeight="32"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                      RowDetailsVisibilityMode="Collapsed">
 
+                                <!-- GRID PRINCIPAL (ENXUTO) -->
                                 <DataGrid.Columns>
 
-                                    <DataGridTextColumn Header="Código" Binding="{Binding Id}" Width="*"/>
-                                    <DataGridTextColumn Header="Descrição" Binding="{Binding Descricao}" Width="*"/>
-                                    <DataGridTextColumn Header="Unidade de Medida" Binding="{Binding UnidadeDeMedida}" Width="1.4*"/>
-                                    <DataGridTextColumn Header="Grupo" Binding="{Binding ProdutoGrupo}" Width="*"/>
-                                    <DataGridTextColumn Header="Preço de Custo" Binding="{Binding PrecoCusto}" Width="1.1*"/>
-                                    <DataGridTextColumn Header="Preço de Venda" Binding="{Binding PrecoVenda}" Width="1.1*"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdProduto}" Width="*"/>
+                                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
+                                    <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="*"/>
+                                    <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
+                                    <DataGridTextColumn Header="Preço" Binding="{Binding Preco}" Width="*"/>
 
                                 </DataGrid.Columns>
+
+                                <!-- DETALHES EXPANDIDOS -->
+                                <DataGrid.RowDetailsTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F3F3F3" Padding="10" CornerRadius="10">
+                                            <Grid>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="Descrição:" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding Descricao}"/>
+
+                                                    <TextBlock Text="Código de Barras:" FontWeight="Bold" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{Binding CodigoBarras}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="Gênero:" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding Genero}"/>
+
+                                                    <TextBlock Text="Condição:" FontWeight="Bold" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{Binding Condicao}"/>
+
+                                                    <TextBlock Text="Tamanho:" FontWeight="Bold" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{Binding Tamanho}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGrid.RowDetailsTemplate>
 
                             </DataGrid>
 
                         </Grid>
-
                     </TabItem>
 
-                    <!-- TAB VENDA -->
-                    <TabItem Header="Venda" FontSize="18" FontWeight="Bold">
+                    <!-- ================= VENDAS ================= -->
+                    <TabItem Header="Vendas">
 
                         <Grid Margin="10">
 
@@ -170,51 +136,29 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                                <Button
-                                    Content="Consultar Vendas"
-                                    Width="160"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="BtnConsultarVenda"/>
-
-                                <Button
-                                    Content="Nova Venda"
-                                    Width="140"
-                                    Height="40"
-                                    Margin="10"
-                                    Background="#9D8BFF"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Click="BtnNovaVendaDialog"/>
+                                <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarVenda"/>
+                                <Button Content="Nova Venda" Width="140" Margin="10" Click="BtnNovaVendaDialog"/>
+                                <Button Content="Editar" Width="140" Margin="10" Click="BtnEditarVenda"/>
+                                <Button Content="Excluir" Width="140" Margin="10" Click="BtnExcluirVenda"/>
 
                             </StackPanel>
 
-                            <DataGrid
-                                Name="gridVendas"
-                                Grid.Row="1"
-                                AutoGenerateColumns="False"
-                                RowHeight="32"
-                                Background="Transparent"
-                                FontSize="14"
-                                HeadersVisibility="Column"
-                                BorderThickness="0">
+                            <DataGrid Name="gridVendas"
+                                      Grid.Row="1"
+                                      AutoGenerateColumns="False"
+                                      RowHeight="32">
 
                                 <DataGrid.Columns>
 
-                                    <DataGridTextColumn Header="Código" Binding="{Binding Id}" Width="*"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdVenda}" Width="*"/>
                                     <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNome}" Width="*"/>
-                                    <DataGridTextColumn Header="CPF" Binding="{Binding ClienteDocumento}" Width="*"/>
-                                    <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
-                                    <DataGridTextColumn Header="Data e Hora"
-                                        Binding="{Binding DataHora, StringFormat=dd/MM/yyyy HH:mm:ss}"
+                                    <DataGridTextColumn Header="Total" Binding="{Binding ValorTotal}" Width="*"/>
+                                    <DataGridTextColumn Header="Pagamento" Binding="{Binding FormaPagamento}" Width="*"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding StatusVenda}" Width="*"/>
+                                    <DataGridTextColumn Header="Data"
+                                        Binding="{Binding DataVenda, StringFormat=dd/MM/yyyy HH:mm}"
                                         Width="*"/>
 
                                 </DataGrid.Columns>
@@ -222,15 +166,51 @@
                             </DataGrid>
 
                         </Grid>
+                    </TabItem>
 
+                    <!-- ================= CLIENTES ================= -->
+                    <TabItem Header="Clientes">
+
+                        <Grid Margin="10">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarClientes"/>
+                                <Button Content="Cadastrar" Width="140" Margin="10" Click="BtnNovoCliente"/>
+                                <Button Content="Editar" Width="140" Margin="10" Click="BtnEditarCliente"/>
+                                <Button Content="Excluir" Width="140" Margin="10" Click="BtnExcluirCliente"/>
+
+                            </StackPanel>
+
+                            <DataGrid Name="gridClientes"
+                                      Grid.Row="1"
+                                      AutoGenerateColumns="False"
+                                      RowHeight="32">
+
+                                <DataGrid.Columns>
+
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdCliente}" Width="*"/>
+                                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
+                                    <DataGridTextColumn Header="Telefone" Binding="{Binding Telefone}" Width="*"/>
+                                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                                    <DataGridTextColumn Header="CPF" Binding="{Binding CPF}" Width="*"/>
+
+                                </DataGrid.Columns>
+
+                            </DataGrid>
+
+                        </Grid>
                     </TabItem>
 
                 </TabControl>
 
             </Grid>
-
         </Border>
 
     </Grid>
-
 </Window>

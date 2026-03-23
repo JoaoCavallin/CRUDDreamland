@@ -1,8 +1,8 @@
 ﻿using Dominio;
 using Dominio.Enum;
 using System;
-using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using UI.Model;
 
 namespace UI
@@ -16,8 +16,10 @@ namespace UI
         {
             InitializeComponent();
 
-            boxGrupo.ItemsSource = Enum.GetValues(typeof(ProdutoGrupo)).Cast<ProdutoGrupo>();
-            boxUnMedida.ItemsSource = Enum.GetValues(typeof(UnidadeMedida)).Cast<UnidadeMedida>();
+            // 🔥 Popular ComboBoxes com enums
+            boxCategoria.ItemsSource = Enum.GetValues(typeof(CategoriaProduto));
+            boxGenero.ItemsSource = Enum.GetValues(typeof(Genero));
+            boxCondicao.ItemsSource = Enum.GetValues(typeof(Condicao));
         }
 
         public NovoProduto(Produtos produto) : this()
@@ -26,69 +28,104 @@ namespace UI
 
             if (_produto != null)
             {
-                // Map existing UI fields to the new Produtos properties.
-                // The UI has limited fields, so use Nome as the main text and store Descricao if available.
-                boxDescricao.Text = string.IsNullOrEmpty(_produto.Descricao) ? _produto.Nome : _produto.Descricao;
-                // UnidadeDeMedida no longer exists on Produtos; leave boxUnMedida as-is if present.
-                if (_produto.CodigoBarras != null)
-                    boxCodBarras.Text = _produto.CodigoBarras;
-                boxPrecoCusto.Text = _produto.Custo?.ToString() ?? string.Empty;
+                boxDescricao.Text = _produto.Descricao;
+                boxCodBarras.Text = _produto.CodigoBarras;
+
+                boxPrecoCusto.Text = _produto.Custo?.ToString() ?? "";
                 boxPrecoVenda.Text = _produto.Preco.ToString();
-                boxAtivo.IsEnabled = _produto.Ativo;
-                // Use Categoria to populate the group box
+
+                boxAtivo.IsChecked = _produto.Ativo;
+
+                // Setar enums no ComboBox
                 if (!string.IsNullOrEmpty(_produto.Categoria))
-                    boxGrupo.Text = _produto.Categoria;
+                    boxCategoria.SelectedItem = Enum.Parse(typeof(CategoriaProduto), _produto.Categoria);
+
+                if (!string.IsNullOrEmpty(_produto.Genero))
+                    boxGenero.SelectedItem = Enum.Parse(typeof(Genero), _produto.Genero);
+
+                if (!string.IsNullOrEmpty(_produto.Condicao))
+                    boxCondicao.SelectedItem = Enum.Parse(typeof(Condicao), _produto.Condicao);
             }
         }
-
 
         private void btnConfirmarProduto(object sender, RoutedEventArgs e)
         {
+            //   VALIDAÇÃO
+            if (string.IsNullOrWhiteSpace(boxNome.Text))
+            {
+                MessageBox.Show("Nome é obrigatório");
+                return;
+            }
+
+            if (!decimal.TryParse(boxPrecoVenda.Text, out var preco))
+            {
+                MessageBox.Show("Preço de venda inválido");
+                return;
+            }
+
+            decimal.TryParse(boxPrecoCusto.Text, out var custo);
+
+            if (boxCategoria.SelectedItem == null ||
+                boxGenero.SelectedItem == null ||
+                boxCondicao.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione Categoria, Gênero e Condição");
+                return;
+            }
+
+            var categoria = boxCategoria.SelectedItem.ToString();
+            var genero = boxGenero.SelectedItem.ToString();
+            var condicao = boxCondicao.SelectedItem.ToString();
+
+            //  NOVO PRODUTO
             if (_produto == null)
             {
-                decimal.TryParse(boxPrecoCusto.Text, out var custo);
-                decimal.TryParse(boxPrecoVenda.Text, out var preco);
-
                 _pModel.AdicionarProduto(
-                    nome: boxDescricao.Text,
+                    nome: boxNome.Text,
                     descricao: boxDescricao.Text,
-                    categoria: boxGrupo.Text,
+                    categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
                     quantidadeEstoque: 0,
-                    marca: string.Empty,
-                    tamanho: string.Empty,
-                    genero: string.Empty,
-                    condicao: string.Empty,
+                    marca: boxMarca.Text,
+                    tamanho: "",
+                    genero: genero,
+                    condicao: condicao,
                     codigoBarras: boxCodBarras.Text,
-                    ativo: boxAtivo.IsEnabled
+                    ativo: boxAtivo.IsChecked == true
                 );
 
-                MessageBox.Show("Produto Adicionado com sucesso!");
+                MessageBox.Show("Produto cadastrado com sucesso!");
             }
             else
             {
-                decimal.TryParse(boxPrecoCusto.Text, out var custo);
-                decimal.TryParse(boxPrecoVenda.Text, out var preco);
-
+                //  EDITAR PRODUTO
                 _pModel.EditarProduto(
                     id: _produto.IdProduto,
-                    nome: boxDescricao.Text,
+                    nome: boxNome.Text,
                     descricao: boxDescricao.Text,
-                    categoria: boxGrupo.Text,
+                    categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
                     quantidadeEstoque: _produto.QuantidadeEstoque,
-                    marca: _produto.Marca ?? string.Empty,
-                    tamanho: _produto.Tamanho ?? string.Empty,
-                    genero: _produto.Genero ?? string.Empty,
-                    condicao: _produto.Condicao ?? string.Empty,
+                    marca: boxMarca.Text,
+                    tamanho: _produto.Tamanho ?? "",
+                    genero: genero,
+                    condicao: condicao,
                     codigoBarras: boxCodBarras.Text,
-                    ativo: boxAtivo.IsEnabled
+                    ativo: boxAtivo.IsChecked == true
                 );
 
-                MessageBox.Show("Produto Atualizado com sucesso!");
+                MessageBox.Show("Produto atualizado com sucesso!");
             }
+
+            this.Close();
         }
+        private void ApenasNumero(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !decimal.TryParse(e.Text, out _);
+        }
+
+
     }
 }

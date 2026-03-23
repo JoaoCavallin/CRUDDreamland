@@ -1,83 +1,218 @@
 ﻿using Dominio;
+using System;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using UI.Model;
 
 namespace UI
 {
     public partial class Principal : Window
     {
+        ProdutoModel _pModel = new ProdutoModel();
+        VendaModel _vModel = new VendaModel();
+        ClienteModel _cModel = new ClienteModel();
+
         public Principal(string usuarioAtual)
         {
             InitializeComponent();
 
             BoxUsuarioAtual.Text = usuarioAtual;
+
+            //  Mostrar detalhes ao selecionar
+            gridProdutos.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
         }
+
+        // ================= PRODUTOS =================
 
         private void BtnCadastroProduto(object sender, RoutedEventArgs e)
         {
-            NovoProduto novoProduto = new NovoProduto();
-
-            novoProduto.ShowDialog();
+            new NovoProduto().ShowDialog();
+            BtnConsultarProduto(null, null); // refresh
         }
 
         private void btnEditarProduto(object sender, RoutedEventArgs e)
         {
-            Produtos produto = (Produtos)gridProdutos.SelectedItem;
+            var produto = (Produtos)gridProdutos.SelectedItem;
 
             if (produto != null)
             {
-                NovoProduto novoProduto = new NovoProduto(produto);
-
-                novoProduto.ShowDialog();
+                new NovoProduto(produto).ShowDialog();
+                BtnConsultarProduto(null, null);
             }
             else
             {
-                MessageBox.Show("Selecione um item");
+                MessageBox.Show("Selecione um produto");
             }
         }
 
         private async void BtnConsultarProduto(object sender, RoutedEventArgs e)
         {
-            ProdutoModel _pModel = new ProdutoModel();
             gridProdutos.ItemsSource = await _pModel.ListarProdutos();
-        }
-
-        private void BtnNovaVendaDialog(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show("Deseja incluir nome e cpf do cliente?", "Nome e CPF do Cliente", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    NomeCpf nomeCpf = new NomeCpf();
-                    nomeCpf.ShowDialog();
-                    break;
-
-                case MessageBoxResult.No:
-                    NovaVenda novaVenda = new NovaVenda("Não informado", "Não informado");
-                    novaVenda.ShowDialog();
-                    break;
-            }
-
-        }
-
-        private async void BtnConsultarVenda(object sender, RoutedEventArgs e)
-        {
-            VendaModel _vModel = new VendaModel();
-
-            gridVendas.ItemsSource = await _vModel.ListarVendas();
         }
 
         private void btnExcluirProduto(object sender, RoutedEventArgs e)
         {
             var produto = (Produtos)gridProdutos.SelectedItem;
+
             if (produto != null)
             {
-                ProdutoModel produtoI = new ProdutoModel();
-                produtoI.ExcluirProduto(produto.IdProduto);
+                var confirm = MessageBox.Show("Deseja excluir o produto?", "Confirmação",
+                    MessageBoxButton.YesNo);
+
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    _pModel.ExcluirProduto(produto.IdProduto);
+                    BtnConsultarProduto(null, null);
+                }
             }
             else
             {
-                MessageBox.Show("Selecione um item");
+                MessageBox.Show("Selecione um produto");
+            }
+        }
+
+        //  BUSCA
+        private async void BuscarProduto(object sender, TextChangedEventArgs e)
+        {
+            var texto = boxBuscaProduto.Text.ToLower();
+
+            var lista = await _pModel.ListarProdutos();
+
+            gridProdutos.ItemsSource = lista
+                .Where(p => p.Nome.ToLower().Contains(texto)
+                         || (p.Marca != null && p.Marca.ToLower().Contains(texto)))
+                .ToList();
+        }
+
+        // ================= VENDAS =================
+
+        private void BtnNovaVendaDialog(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Deseja incluir nome e cpf do cliente?",
+                "Cliente",
+                MessageBoxButton.YesNoCancel);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    new NomeCpf().ShowDialog();
+                    break;
+
+                case MessageBoxResult.No:
+                    new NovaVenda("Não informado", "Não informado").ShowDialog();
+                    break;
+            }
+
+            BtnConsultarVenda(null, null);
+        }
+
+        private async void BtnConsultarVenda(object sender, RoutedEventArgs e)
+        {
+            gridVendas.ItemsSource = await _vModel.ListarVendas();
+        }
+
+        private void BtnEditarVenda(object sender, RoutedEventArgs e)
+        {
+            var venda = gridVendas.SelectedItem;
+
+            if (venda != null)
+            {
+                MessageBox.Show("Tela de edição de venda ainda não implementada 😄");
+                // 👉 depois você cria: new EditarVenda(venda).ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Selecione uma venda");
+            }
+        }
+
+        private async void BtnExcluirVenda(object sender, RoutedEventArgs e)
+        {
+            var venda = gridVendas.SelectedItem as Vendas;
+
+            if (venda == null)
+            {
+                MessageBox.Show("Selecione uma venda");
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"Deseja excluir a venda ID {venda.IdVenda}?",
+                "Confirmação",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                var sucesso = await _vModel.ExcluirVenda(venda.IdVenda);
+
+                if (sucesso)
+                {
+                    MessageBox.Show("Venda excluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    BtnConsultarVenda(null, null);
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao excluir venda!", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ================= CLIENTES =================
+
+        private async void BtnConsultarClientes(object sender, RoutedEventArgs e)
+        {
+            gridClientes.ItemsSource = await _cModel.ListarClientes();
+        }
+
+        private void BtnNovoCliente(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Tela de cadastro de cliente ainda não criada 😄");
+            // new NovoCliente().ShowDialog();
+        }
+
+        private void BtnEditarCliente(object sender, RoutedEventArgs e)
+        {
+            var cliente = gridClientes.SelectedItem;
+
+            if (cliente != null)
+            {
+                MessageBox.Show("Tela de edição de cliente ainda não criada 😄");
+            }
+            else
+            {
+                MessageBox.Show("Selecione um cliente");
+            }
+        }
+
+        private void BtnExcluirCliente(object sender, RoutedEventArgs e)
+        {
+            dynamic cliente = gridClientes.SelectedItem;
+
+            if (cliente != null)
+            {
+                var confirm = MessageBox.Show("Excluir cliente?", "Confirmação",
+                    MessageBoxButton.YesNo);
+
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    _cModel.ExcluirCliente(cliente.IdCliente);
+                    BtnConsultarClientes(null, null);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecione um cliente");
             }
         }
     }

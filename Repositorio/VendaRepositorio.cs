@@ -1,5 +1,6 @@
 ﻿using Dominio;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,6 +38,11 @@ namespace Repositorio
         public async Task<Vendas> GetByIdAsync(int vendaId)
         {
             return await _context.Vendas.Where(V => V.IdVenda == vendaId).FirstOrDefaultAsync();
+        }
+
+        public void Remove(Vendas venda)
+        {
+            _context.Vendas.Remove(venda);
         }
     }
 }

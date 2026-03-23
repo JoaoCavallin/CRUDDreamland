@@ -55,5 +55,35 @@ namespace UI.Model
 
             return await _vendaProdutoRepositorio.SaveChangesAsync();
         }
+
+        public async Task<bool> ExcluirVenda(int idVenda)
+        {
+            try
+            {
+                // 🔥 1. Buscar itens da venda (ProdutoVendas)
+                var itensVenda = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
+
+                if (itensVenda != null && itensVenda.Count > 0)
+                {
+                    _vendaProdutoRepositorio.RemoveRange(itensVenda);
+                    await _vendaProdutoRepositorio.SaveChangesAsync();
+                }
+
+                // 🔥 2. Buscar a venda
+                var venda = await _vendaRepositorio.GetByIdAsync(idVenda);
+
+                if (venda == null)
+                    return false;
+
+                // 🔥 3. Remover venda
+                _vendaRepositorio.Remove(venda);
+
+                return await _vendaRepositorio.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
