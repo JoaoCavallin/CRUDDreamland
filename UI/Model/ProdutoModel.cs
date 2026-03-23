@@ -17,18 +17,37 @@ namespace UI.Model
             return await _produtoRepositorio.GetAllAsync();
         }
 
-        public async void AdicionarProduto
-        (
+        public async void AdicionarProduto(
+            string nome,
             string descricao,
-            UnidadeMedida unidadeDeMedida,
-            string codBarras,
-            decimal precoCusto,
-            decimal precoVenda,
-            bool ativo,
-            ProdutoGrupo produtoGrupo
+            string categoria,
+            decimal preco,
+            decimal? custo,
+            int quantidadeEstoque,
+            string marca,
+            string tamanho,
+            string genero,
+            string condicao,
+            string codigoBarras,
+            bool ativo
         )
         {
-            Produtos produto = new Produtos(descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
+            Produtos produto = new Produtos
+            {
+                Nome = nome,
+                Descricao = descricao,
+                Categoria = categoria,
+                Preco = preco,
+                Custo = custo,
+                QuantidadeEstoque = quantidadeEstoque,
+                Marca = marca,
+                Tamanho = tamanho,
+                Genero = genero,
+                Condicao = condicao,
+                CodigoBarras = codigoBarras,
+                DataCadastro = DateTime.Now,
+                Ativo = ativo
+            };
 
             _produtoRepositorio.Add(produto);
             await _produtoRepositorio.SaveChangesAsync();
@@ -52,19 +71,39 @@ namespace UI.Model
                 }
             }
         }
-        public async void EditarProduto
-        (
-            int Id,
+        public async void EditarProduto(
+            int id,
+            string nome,
             string descricao,
-            UnidadeMedida unidadeDeMedida,
-            string codBarras,
-            decimal precoCusto,
-            decimal precoVenda,
-            bool ativo,
-            ProdutoGrupo produtoGrupo
+            string categoria,
+            decimal preco,
+            decimal? custo,
+            int quantidadeEstoque,
+            string marca,
+            string tamanho,
+            string genero,
+            string condicao,
+            string codigoBarras,
+            bool ativo
         )
         {
-            Produtos atualizarProduto = new Produtos(Id, descricao, unidadeDeMedida, codBarras, precoCusto, precoVenda, DateTime.Now, ativo, produtoGrupo);
+            Produtos atualizarProduto = new Produtos
+            {
+                IdProduto = id,
+                Nome = nome,
+                Descricao = descricao,
+                Categoria = categoria,
+                Preco = preco,
+                Custo = custo,
+                QuantidadeEstoque = quantidadeEstoque,
+                Marca = marca,
+                Tamanho = tamanho,
+                Genero = genero,
+                Condicao = condicao,
+                CodigoBarras = codigoBarras,
+                DataCadastro = DateTime.Now,
+                Ativo = ativo
+            };
 
             _produtoRepositorio.Update(atualizarProduto);
             await _produtoRepositorio.SaveChangesAsync();

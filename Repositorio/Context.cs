@@ -12,7 +12,7 @@ namespace Repositorio
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=TQR216777\SQLEXPRESS;Database=DreamLand;User Id=tds;Password=tds123;");
+            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=DreamLand;Integrated Security=True;TrustServerCertificate=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -73,7 +73,7 @@ namespace UI
             if (produto != null)
             {
                 ProdutoModel produtoI = new ProdutoModel();
-                produtoI.ExcluirProduto(produto.Id);
+                produtoI.ExcluirProduto(produto.IdProduto);
             }
             else
             {

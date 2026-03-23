@@ -45,7 +45,8 @@ namespace UI
                 Produtos produto = await vModel.ProcurarProduto(codigoProduto);
                 produtos.Add(produto);
 
-                NovaVendaCollection vendas = new NovaVendaCollection(produto.IdProduto, produto.Descricao, produto.UnidadeDeMedida, produto.PrecoVenda, int.Parse(boxQuantidade.Text));
+                var quantidade = int.Parse(boxQuantidade.Text);
+                NovaVendaCollection vendas = new NovaVendaCollection(produto.IdProduto, produto.Descricao, produto.Preco, quantidade);
 
                 gridVendaProduto.Items.Add(vendas);
 
@@ -55,7 +56,7 @@ namespace UI
 
         private async void btnConfirmarVenda(object sender, RoutedEventArgs e)
         {
-            bool status = await vModel.NovaVenda(blockCpfCliente.Text, blockNomeCliente.Text, decimal.Parse(blockTotal.Text), boxObs.Text, produtos);
+            bool status = await vModel.NovaVenda(blockCpfCliente.Text, blockNomeCliente.Text, decimal.Parse(blockTotal.Text), produtos);
 
             if (status == true)
             {
@@ -87,19 +88,17 @@ namespace UI
     {
         public int ProdutoId { get; set; }
         public string ProdutoNome { get; set; }
-        public UnidadeMedida UnidadeDeMedida { get; set; }
-        public decimal PrecoVenda { get; set; }
+        public decimal Preco { get; set; }
         public int QuantidadeProduto { get; set; }
         public decimal Total { get; set; }
 
-        public NovaVendaCollection(int produtoId, string produtoNome, UnidadeMedida unidadeDeMedida, decimal precoVenda, int quantidadeProduto)
+        public NovaVendaCollection(int produtoId, string produtoNome, decimal preco, int quantidadeProduto)
         {
             ProdutoId = produtoId;
             ProdutoNome = produtoNome;
-            UnidadeDeMedida = unidadeDeMedida;
-            PrecoVenda = precoVenda;
+            Preco = preco;
             QuantidadeProduto = quantidadeProduto;
-            Total = quantidadeProduto * precoVenda;
+            Total = quantidadeProduto * preco;
         }
     }
 }
