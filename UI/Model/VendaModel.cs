@@ -11,6 +11,7 @@ namespace UI.Model
         private VendaProdutoRepositorio _vendaProdutoRepositorio = new VendaProdutoRepositorio();
         private ProdutoRepositorio _produtoRepositorio = new ProdutoRepositorio();
         private VendaRepositorio _vendaRepositorio = new VendaRepositorio();
+        private ClienteRepositorio _clienteRepositorio = new ClienteRepositorio();
 
         public async Task<Produtos> ProcurarProduto(int id)
         {
@@ -22,38 +23,59 @@ namespace UI.Model
             return await _vendaRepositorio.GetAllAsync();
         }
 
-        public async Task<bool> NovaVenda(string clienteDocumento, string clienteNome, decimal valorTotal, List<Produtos> produtos, string formaPagamento = null, string statusVenda = null)
+        // ✅ NOVA VENDA COM CLIENTE_ID
+        public async Task<bool> NovaVenda(
+            int clienteId,
+            decimal valorTotal,
+            List<Produtos> produtos,
+            string formaPagamento = null,
+            string statusVenda = null)
         {
-            List<ProdutoVendas> vendaProdutos = new List<ProdutoVendas>();
-            Vendas venda = new Vendas(clienteDocumento, clienteNome, valorTotal)
+            try
             {
-                FormaPagamento = formaPagamento,
-                StatusVenda = string.IsNullOrEmpty(statusVenda) ? "Concluida" : statusVenda,
-                DataVenda = DateTime.Now
-            };
+                var cliente = await _clienteRepositorio.GetByIdAsync(clienteId);
 
-            _vendaRepositorio.Add(venda);
-            await _vendaRepositorio.SaveChangesAsync();
+                if (cliente == null)
+                    return false;
 
-            foreach (Produtos produto in produtos)
-            {
-                var quantidade = 1;
-                var precoUnitario = produto.Preco;
-                var subtotal = precoUnitario * quantidade;
-
-                vendaProdutos.Add(new ProdutoVendas
+                Vendas venda = new Vendas
                 {
-                    ProdutoId = produto.IdProduto,
-                    VendaId = venda.IdVenda,
-                    Quantidade = quantidade,
-                    PrecoUnitario = precoUnitario,
-                    Subtotal = subtotal
-                });
+                    ClienteId = clienteId,
+                    ValorTotal = valorTotal,
+                    FormaPagamento = formaPagamento,
+                    StatusVenda = string.IsNullOrEmpty(statusVenda) ? "Concluida" : statusVenda,
+                    DataVenda = DateTime.Now
+                };
+
+                _vendaRepositorio.Add(venda);
+                await _vendaRepositorio.SaveChangesAsync();
+
+                List<ProdutoVendas> vendaProdutos = new List<ProdutoVendas>();
+
+                foreach (Produtos produto in produtos)
+                {
+                    int quantidade = 1;
+                    decimal precoUnitario = produto.Preco;
+                    decimal subtotal = precoUnitario * quantidade;
+
+                    vendaProdutos.Add(new ProdutoVendas
+                    {
+                        ProdutoId = produto.IdProduto,
+                        VendaId = venda.IdVenda,
+                        Quantidade = quantidade,
+                        PrecoUnitario = precoUnitario,
+                        Subtotal = subtotal
+                    });
+                }
+
+                _vendaProdutoRepositorio.AddRange(vendaProdutos);
+
+                return await _vendaProdutoRepositorio.SaveChangesAsync();
             }
-
-            _vendaProdutoRepositorio.AddRange(vendaProdutos);
-
-            return await _vendaProdutoRepositorio.SaveChangesAsync();
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> ExcluirVenda(int idVenda)
@@ -77,13 +99,20 @@ namespace UI.Model
 
                 return await _vendaRepositorio.SaveChangesAsync();
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
         }
 
-        public async Task<bool> EditarVenda(int idVenda, string clienteDocumento, string clienteNome, decimal valorTotal, List<Produtos> produtos, string formaPagamento = null, string statusVenda = null)
+        // ✅ EDITAR TAMBÉM USANDO ClienteId
+        public async Task<bool> EditarVenda(
+            int idVenda,
+            int clienteId,
+            decimal valorTotal,
+            List<Produtos> produtos,
+            string formaPagamento = null,
+            string statusVenda = null)
         {
             try
             {
@@ -92,8 +121,12 @@ namespace UI.Model
                 if (vendaExistente == null)
                     return false;
 
-                vendaExistente.ClienteDocumento = clienteDocumento;
-                vendaExistente.ClienteNome = clienteNome;
+                var cliente = await _clienteRepositorio.GetByIdAsync(clienteId);
+
+                if (cliente == null)
+                    return false;
+
+                vendaExistente.ClienteId = clienteId;
                 vendaExistente.ValorTotal = valorTotal;
                 vendaExistente.FormaPagamento = formaPagamento;
                 vendaExistente.StatusVenda = string.IsNullOrEmpty(statusVenda) ? "Concluida" : statusVenda;
@@ -102,6 +135,7 @@ namespace UI.Model
                 await _vendaRepositorio.SaveChangesAsync();
 
                 var itensVendaAntigos = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
+
                 if (itensVendaAntigos != null && itensVendaAntigos.Count > 0)
                 {
                     _vendaProdutoRepositorio.RemoveRange(itensVendaAntigos);
@@ -109,11 +143,12 @@ namespace UI.Model
                 }
 
                 List<ProdutoVendas> vendaProdutosNovos = new List<ProdutoVendas>();
+
                 foreach (Produtos produto in produtos)
                 {
-                    var quantidade = 1;
-                    var precoUnitario = produto.Preco;
-                    var subtotal = precoUnitario * quantidade;
+                    int quantidade = 1;
+                    decimal precoUnitario = produto.Preco;
+                    decimal subtotal = precoUnitario * quantidade;
 
                     vendaProdutosNovos.Add(new ProdutoVendas
                     {
@@ -126,9 +161,10 @@ namespace UI.Model
                 }
 
                 _vendaProdutoRepositorio.AddRange(vendaProdutosNovos);
+
                 return await _vendaProdutoRepositorio.SaveChangesAsync();
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
