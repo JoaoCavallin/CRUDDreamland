@@ -31,7 +31,6 @@ namespace Dominio
 
         public bool Ativo { get; set; } = true;
 
-        //  Relacionamento com Vendas
         public ICollection<Vendas> Vendas { get; set; }
     }
 }

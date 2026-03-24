@@ -1,6 +1,7 @@
 ﻿using Dominio;
 using Dominio.Enum;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using UI.Model;
@@ -16,7 +17,6 @@ namespace UI
         {
             InitializeComponent();
 
-            // 🔥 Popular ComboBoxes com enums
             boxCategoria.ItemsSource = Enum.GetValues(typeof(CategoriaProduto));
             boxGenero.ItemsSource = Enum.GetValues(typeof(Genero));
             boxCondicao.ItemsSource = Enum.GetValues(typeof(Condicao));
@@ -28,6 +28,9 @@ namespace UI
 
             if (_produto != null)
             {
+                boxNome.Text = _produto.Nome;        
+                boxMarca.Text = _produto.Marca;     
+
                 boxDescricao.Text = _produto.Descricao;
                 boxCodBarras.Text = _produto.CodigoBarras;
 
@@ -35,6 +38,8 @@ namespace UI
                 boxPrecoVenda.Text = _produto.Preco.ToString();
 
                 boxAtivo.IsChecked = _produto.Ativo;
+
+                boxTamanho.Text = _produto.Tamanho;
 
                 if (!string.IsNullOrEmpty(_produto.Categoria))
                     boxCategoria.SelectedItem = Enum.Parse(typeof(CategoriaProduto), _produto.Categoria);
@@ -46,8 +51,11 @@ namespace UI
                     boxCondicao.SelectedItem = Enum.Parse(typeof(Condicao), _produto.Condicao);
             }
         }
-
-        private void btnConfirmarProduto(object sender, RoutedEventArgs e)
+        private async void btnConfimarProduto_Click(object sender, RoutedEventArgs e)
+        {
+           await btnConfirmarProduto(sender, e);
+        }
+        private async Task btnConfirmarProduto(object sender, RoutedEventArgs e)
         {
             //   VALIDAÇÃO
             if (string.IsNullOrWhiteSpace(boxNome.Text))
@@ -79,7 +87,7 @@ namespace UI
             //  NOVO PRODUTO
             if (_produto == null)
             {
-                _pModel.AdicionarProduto(
+               await _pModel.AdicionarProduto(
                     nome: boxNome.Text,
                     descricao: boxDescricao.Text,
                     categoria: categoria,
@@ -87,7 +95,7 @@ namespace UI
                     custo: custo == 0 ? (decimal?)null : custo,
                     quantidadeEstoque: 0,
                     marca: boxMarca.Text,
-                    tamanho: "",
+                    tamanho: boxTamanho.Text,
                     genero: genero,
                     condicao: condicao,
                     codigoBarras: boxCodBarras.Text,
@@ -98,7 +106,7 @@ namespace UI
             }
             else
             {
-                _pModel.EditarProduto(
+               await _pModel.EditarProduto(
                     id: _produto.IdProduto,
                     nome: boxNome.Text,
                     descricao: boxDescricao.Text,
@@ -107,7 +115,7 @@ namespace UI
                     custo: custo == 0 ? (decimal?)null : custo,
                     quantidadeEstoque: _produto.QuantidadeEstoque,
                     marca: boxMarca.Text,
-                    tamanho: _produto.Tamanho ?? "",
+                    tamanho: boxTamanho.Text,
                     genero: genero,
                     condicao: condicao,
                     codigoBarras: boxCodBarras.Text,

@@ -11,11 +11,11 @@ namespace Dominio
         public int IdVenda { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string ClienteDocumento { get; set; }
+        public int ClienteId { get; set; }
 
-        [Required]
-        [MaxLength(40)]
+        public Clientes Cliente { get; set; }
+
+        [MaxLength(100)]
         public string ClienteNome { get; set; }
 
         public DateTime DataVenda { get; set; } = DateTime.Now;
@@ -34,10 +34,9 @@ namespace Dominio
 
         public Vendas() { }
 
-        public Vendas(string clienteDocumento, string clienteNome, decimal valorTotal)
+        public Vendas(int clienteId, decimal valorTotal)
         {
-            ClienteDocumento = clienteDocumento;
-            ClienteNome = clienteNome;
+            ClienteId = clienteId;
             ValorTotal = valorTotal;
         }
     }

@@ -17,7 +17,7 @@ namespace UI.Model
             return await _produtoRepositorio.GetAllAsync();
         }
 
-        public async void AdicionarProduto(
+        public async Task AdicionarProduto(
             string nome,
             string descricao,
             string categoria,
@@ -71,21 +71,21 @@ namespace UI.Model
                 }
             }
         }
-        public async void EditarProduto(
-            int id,
-            string nome,
-            string descricao,
-            string categoria,
-            decimal preco,
-            decimal? custo,
-            int quantidadeEstoque,
-            string marca,
-            string tamanho,
-            string genero,
-            string condicao,
-            string codigoBarras,
-            bool ativo
-        )
+        public async Task EditarProduto(
+             int id,
+             string nome,
+             string descricao,
+             string categoria,
+             decimal preco,
+             decimal? custo,
+             int quantidadeEstoque,
+             string marca,
+             string tamanho,
+             string genero,
+             string condicao,
+             string codigoBarras,
+             bool ativo
+ )
         {
             Produtos atualizarProduto = new Produtos
             {
@@ -98,7 +98,7 @@ namespace UI.Model
                 QuantidadeEstoque = quantidadeEstoque,
                 Marca = marca,
                 Tamanho = tamanho,
-                Genero = genero,    
+                Genero = genero,
                 Condicao = condicao,
                 CodigoBarras = codigoBarras,
                 DataCadastro = DateTime.Now,

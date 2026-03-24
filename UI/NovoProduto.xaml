@@ -46,22 +46,28 @@
         <Label Content="Preço de Custo" Grid.Row="4" Grid.Column="1"/>
         <TextBox Name="boxPrecoCusto" Grid.Row="5" Grid.Column="1" Margin="0,5,0,10"/>
 
-        <!-- ENUMS -->
+        <!-- ENUMS + TAMANHO -->
         <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10">
 
-            <StackPanel Width="200" Margin="0,0,10,0">
+            <StackPanel Width="150" Margin="0,0,10,0">
                 <Label Content="Categoria"/>
                 <ComboBox Name="boxCategoria"/>
             </StackPanel>
 
-            <StackPanel Width="200" Margin="0,0,10,0">
+            <StackPanel Width="150" Margin="0,0,10,0">
                 <Label Content="Gênero"/>
                 <ComboBox Name="boxGenero"/>
             </StackPanel>
 
-            <StackPanel Width="200">
+            <StackPanel Width="150" Margin="0,0,10,0">
                 <Label Content="Condição"/>
                 <ComboBox Name="boxCondicao"/>
+            </StackPanel>
+
+            <!-- NOVO TAMANHO -->
+            <StackPanel Width="100">
+                <Label Content="Tamanho"/>
+                <TextBox Name="boxTamanho"/>
             </StackPanel>
 
         </StackPanel>
@@ -87,7 +93,7 @@
 
                 <Button Content="Confirmar"
                         Width="120"
-                        Click="btnConfirmarProduto"/>
+                        Click="btnConfimarProduto_Click"/>
             </StackPanel>
 
         </Grid>

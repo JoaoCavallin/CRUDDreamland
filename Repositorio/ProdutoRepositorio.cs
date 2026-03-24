@@ -31,7 +31,9 @@ namespace Repositorio
 
         public async Task<Produtos[]> GetAllAsync()
         {
-            return await _context.Produtos.ToArrayAsync();
+            return await _context.Produtos
+                                        .AsNoTracking()
+                                        .ToArrayAsync();
         }
 
         public async Task<Produtos> GetByIdAsync(int ProdutoId)

@@ -60,7 +60,7 @@
                                         HorizontalAlignment="Center"
                                         Grid.Row="1">
 
-                                <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarProduto"/>
+                                <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarProduto_Click"/>
                                 <Button Content="Cadastrar" Width="140" Margin="10" Click="BtnCadastroProduto"/>
                                 <Button Content="Editar" Width="140" Margin="10" Click="btnEditarProduto"/>
                                 <Button Content="Excluir" Width="140" Margin="10" Click="btnExcluirProduto"/>
@@ -78,8 +78,8 @@
                                 <!-- GRID PRINCIPAL (ENXUTO) -->
                                 <DataGrid.Columns>
 
-                                    <DataGridTextColumn Header="ID" Binding="{Binding IdProduto}" Width="*"/>
-                                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
+                                    <DataGridTextColumn Header=" ID" Binding="{Binding IdProduto}" Width="*"/>
+                                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
                                     <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="*"/>
                                     <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
                                     <DataGridTextColumn Header="Preço" Binding="{Binding Preco}" Width="*"/>

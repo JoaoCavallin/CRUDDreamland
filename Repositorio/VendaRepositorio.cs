@@ -32,7 +32,7 @@ namespace Repositorio
 
         public async Task<Vendas[]> GetAllAsync()
         {
-            return await _context.Vendas.ToArrayAsync();
+            return await _context.Vendas.AsNoTracking().ToArrayAsync();
         }
 
         public async Task<Vendas> GetByIdAsync(int vendaId)

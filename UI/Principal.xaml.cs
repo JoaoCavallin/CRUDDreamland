@@ -1,6 +1,7 @@
 ﻿using Dominio;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using UI.Model;
@@ -19,26 +20,25 @@ namespace UI
 
             BoxUsuarioAtual.Text = usuarioAtual;
 
-            //  Mostrar detalhes ao selecionar
             gridProdutos.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
         }
 
         // ================= PRODUTOS =================
 
-        private void BtnCadastroProduto(object sender, RoutedEventArgs e)
+        private async void BtnCadastroProduto(object sender, RoutedEventArgs e)
         {
             new NovoProduto().ShowDialog();
-            BtnConsultarProduto(null, null); // refresh
+            await BtnConsultarProduto();
         }
 
-        private void btnEditarProduto(object sender, RoutedEventArgs e)
+        private async void btnEditarProduto(object sender, RoutedEventArgs e)
         {
             var produto = (Produtos)gridProdutos.SelectedItem;
 
             if (produto != null)
             {
                 new NovoProduto(produto).ShowDialog();
-                BtnConsultarProduto(null, null);
+                await BtnConsultarProduto();
             }
             else
             {
@@ -46,12 +46,21 @@ namespace UI
             }
         }
 
-        private async void BtnConsultarProduto(object sender, RoutedEventArgs e)
+        private async void BtnConsultarProduto_Click(object sender, RoutedEventArgs e)
         {
-            gridProdutos.ItemsSource = await _pModel.ListarProdutos();
+            await BtnConsultarProduto();
+        }
+        private async Task BtnConsultarProduto()
+        {
+            var lista = await _pModel.ListarProdutos();
+
+            gridProdutos.ItemsSource = null; // limpa
+            gridProdutos.ItemsSource = lista; // recarrega
+
+            gridProdutos.Items.Refresh(); // 🔥 força atualização visual
         }
 
-        private void btnExcluirProduto(object sender, RoutedEventArgs e)
+        private async void btnExcluirProduto(object sender, RoutedEventArgs e)
         {
             var produto = (Produtos)gridProdutos.SelectedItem;
 
@@ -63,7 +72,7 @@ namespace UI
                 if (confirm == MessageBoxResult.Yes)
                 {
                     _pModel.ExcluirProduto(produto.IdProduto);
-                    BtnConsultarProduto(null, null);
+                    await BtnConsultarProduto();
                 }
             }
             else
@@ -72,7 +81,7 @@ namespace UI
             }
         }
 
-        //  BUSCA
+        // 🔍 BUSCA
         private async void BuscarProduto(object sender, TextChangedEventArgs e)
         {
             var texto = boxBuscaProduto.Text.ToLower();
@@ -81,6 +90,7 @@ namespace UI
 
             gridProdutos.ItemsSource = lista
                 .Where(p => p.Nome.ToLower().Contains(texto)
+                         || (p.Descricao != null && p.Descricao.ToLower().Contains(texto))
                          || (p.Marca != null && p.Marca.ToLower().Contains(texto)))
                 .ToList();
         }
@@ -90,7 +100,6 @@ namespace UI
         private void BtnNovaVendaDialog(object sender, RoutedEventArgs e)
         {
             new NomeCpf().ShowDialog();
-
             BtnConsultarVenda(null, null);
         }
 
@@ -106,7 +115,6 @@ namespace UI
             if (venda != null)
             {
                 MessageBox.Show("Tela de edição de venda ainda não implementada 😄");
-                //  depois você cria: new EditarVenda(venda).ShowDialog();
             }
             else
             {
@@ -164,7 +172,6 @@ namespace UI
         private void BtnNovoCliente(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Tela de cadastro de cliente ainda não criada 😄");
-            // new NovoCliente().ShowDialog();
         }
 
         private void BtnEditarCliente(object sender, RoutedEventArgs e)
