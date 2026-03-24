@@ -1,4 +1,3 @@
-
 -- =========================
 -- TABELA USUARIOS
 -- =========================
@@ -10,7 +9,7 @@ CREATE TABLE Usuarios (
     Senha NVARCHAR(255) NOT NULL,
     DataCriacao DATETIME DEFAULT GETDATE(),
     Ativo BIT DEFAULT 1,
-    ADM BIT DEFAULT 1,
+    ADM BIT DEFAULT 1
 );
 
 -- =========================
@@ -21,13 +20,11 @@ CREATE TABLE Produtos (
     IdProduto INT PRIMARY KEY IDENTITY(1,1),
 
     Nome NVARCHAR(150) NOT NULL,
-
     Descricao NVARCHAR(300),
 
     Categoria NVARCHAR(100) NOT NULL,
 
     Preco DECIMAL(10,2) NOT NULL,
-
     Custo DECIMAL(10,2),
 
     QuantidadeEstoque INT DEFAULT 0,
@@ -36,14 +33,31 @@ CREATE TABLE Produtos (
     Tamanho NVARCHAR(20),
 
     Genero NVARCHAR(20),  -- Masculino / Feminino / Unissex
-
     Condicao NVARCHAR(20), -- Novo / Seminovo / Usado
 
     CodigoBarras NVARCHAR(50),
 
     DataCadastro DATETIME DEFAULT GETDATE(),
-
     Ativo BIT DEFAULT 1
+);
+
+-- =========================
+-- TABELA CLIENTES
+-- =========================
+
+CREATE TABLE Clientes (
+    IdCliente INT IDENTITY(1,1) PRIMARY KEY,
+
+    ClienteDocumento NVARCHAR(20) NOT NULL,
+    ClienteNome NVARCHAR(40) NOT NULL,
+
+    ClienteEmail NVARCHAR(150) NULL,
+    ClienteTelefone NVARCHAR(20) NULL,
+
+    Saldo DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+    DataCadastro DATETIME NOT NULL DEFAULT GETDATE(),
+    Ativo BIT NOT NULL DEFAULT 1
 );
 
 -- =========================
@@ -53,9 +67,7 @@ CREATE TABLE Produtos (
 CREATE TABLE Vendas (
     IdVenda INT PRIMARY KEY IDENTITY(1,1),
 
-    ClienteDocumento NVARCHAR(20) NOT NULL,
-
-    ClienteNome NVARCHAR(40) NOT NULL,
+    ClienteId INT NOT NULL,
 
     DataVenda DATETIME DEFAULT GETDATE(),
 
@@ -63,7 +75,9 @@ CREATE TABLE Vendas (
 
     FormaPagamento NVARCHAR(50),
 
-    StatusVenda NVARCHAR(20) DEFAULT 'Concluida'
+    StatusVenda NVARCHAR(20) DEFAULT 'Concluida',
+
+    FOREIGN KEY (ClienteId) REFERENCES Clientes(IdCliente)
 );
 
 -- =========================

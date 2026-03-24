@@ -89,21 +89,7 @@ namespace UI
 
         private void BtnNovaVendaDialog(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(
-                "Deseja incluir nome e cpf do cliente?",
-                "Cliente",
-                MessageBoxButton.YesNoCancel);
-
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    new NomeCpf().ShowDialog();
-                    break;
-
-                case MessageBoxResult.No:
-                    new NovaVenda("Não informado", "Não informado").ShowDialog();
-                    break;
-            }
+            new NomeCpf().ShowDialog();
 
             BtnConsultarVenda(null, null);
         }
@@ -120,7 +106,7 @@ namespace UI
             if (venda != null)
             {
                 MessageBox.Show("Tela de edição de venda ainda não implementada 😄");
-                // 👉 depois você cria: new EditarVenda(venda).ShowDialog();
+                //  depois você cria: new EditarVenda(venda).ShowDialog();
             }
             else
             {

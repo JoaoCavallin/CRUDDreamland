@@ -98,7 +98,7 @@ namespace UI.Model
                 QuantidadeEstoque = quantidadeEstoque,
                 Marca = marca,
                 Tamanho = tamanho,
-                Genero = genero,
+                Genero = genero,    
                 Condicao = condicao,
                 CodigoBarras = codigoBarras,
                 DataCadastro = DateTime.Now,

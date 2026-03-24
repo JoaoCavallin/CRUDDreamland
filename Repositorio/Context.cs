@@ -9,10 +9,12 @@ namespace Repositorio
         public DbSet<Vendas> Vendas { get; set; }
         public DbSet<ProdutoVendas> ProdutoVendas { get; set; }
         public DbSet<Usuarios> Usuarios { get; set; }
+        public DbSet<Clientes> Clientes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=DreamLand;Integrated Security=True;TrustServerCertificate=True;");
+            //optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=DreamLand;Integrated Security=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer(@"Server=TQR216777\SQLEXPRESS;Database=DreamLand;User Id=tds;Password=tds123;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
