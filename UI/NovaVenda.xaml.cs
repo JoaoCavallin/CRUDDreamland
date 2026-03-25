@@ -81,9 +81,9 @@ namespace UI
         {
             if (e.Key == Key.Enter)
             {
-                if (!int.TryParse(boxCodProduto.Text, out int codigo))
+                if (!int.TryParse(boxCodProduto.Text, out int codigo) || codigo <= 0)
                 {
-                    MessageBox.Show("Código inválido!");
+                    MessageBox.Show("Código inválido! Digite apenas números positivos.");
                     return;
                 }
 
@@ -105,15 +105,15 @@ namespace UI
         {
             if (e.Key == Key.Enter)
             {
-                if (!int.TryParse(boxCodProduto.Text, out int codigoProduto))
+                if (!int.TryParse(boxCodProduto.Text, out int codigoProduto) || codigoProduto <= 0)
                 {
-                    MessageBox.Show("Código inválido!");
+                    MessageBox.Show("Código inválido! Digite apenas números positivos.");
                     return;
                 }
 
-                if (!int.TryParse(boxQuantidade.Text, out int quantidade))
+                if (!int.TryParse(boxQuantidade.Text, out int quantidade) || quantidade <= 0)
                 {
-                    MessageBox.Show("Quantidade inválida!");
+                    MessageBox.Show("Quantidade inválida! Deve ser maior que zero.");
                     return;
                 }
 
@@ -121,7 +121,22 @@ namespace UI
 
                 if (produto == null)
                 {
-                    MessageBox.Show("Produto inválido!");
+                    MessageBox.Show("Produto não encontrado!");
+                    return;
+                }
+
+                // VALIDAÇÃO DE ESTOQUE AO ADICIONAR
+                if (produto.QuantidadeEstoque < quantidade)
+                {
+                    MessageBox.Show($"Estoque insuficiente! Disponível: {produto.QuantidadeEstoque}");
+                    return;
+                }
+
+                // VERIFICA DUPLICADO
+                bool jaAdicionado = itensVenda.Any(i => i.ProdutoId == produto.IdProduto);
+                if (jaAdicionado)
+                {
+                    MessageBox.Show("Este produto já foi adicionado à venda.");
                     return;
                 }
 
@@ -135,6 +150,10 @@ namespace UI
                 );
 
                 itensVenda.Add(vendaItem);
+
+                boxCodProduto.Clear();
+                boxQuantidade.Clear();
+                blockNomeProduto.Text = string.Empty;
 
                 AtualizarTotal();
             }
@@ -166,7 +185,13 @@ namespace UI
         // ================= CONFIRMAR VENDA =================
         private async void btnConfirmarVenda(object sender, RoutedEventArgs e)
         {
-            if (!decimal.TryParse(blockTotal.Text, out decimal total))
+            if (itensVenda.Count == 0)
+            {
+                MessageBox.Show("Adicione ao menos um produto à venda.");
+                return;
+            }
+
+            if (!decimal.TryParse(blockTotal.Text, out decimal total) || total <= 0)
             {
                 MessageBox.Show("Total inválido.");
                 return;
@@ -174,7 +199,7 @@ namespace UI
 
             if (boxPagamento.SelectedItem == null || boxStatus.SelectedItem == null)
             {
-                MessageBox.Show("Selecione forma de pagamento e status");
+                MessageBox.Show("Selecione forma de pagamento e status.");
                 return;
             }
 
@@ -224,7 +249,7 @@ namespace UI
 
             if (item == null)
             {
-                MessageBox.Show("Selecione um item no grid");
+                MessageBox.Show("Selecione um item no grid.");
                 return;
             }
 

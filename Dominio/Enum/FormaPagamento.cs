@@ -9,6 +9,7 @@ namespace Dominio.Enum
         Dinheiro,
         CartaoCredito,
         CartaoDebito,
-        Pix
+        Pix,
+        Saldo
     }
 }

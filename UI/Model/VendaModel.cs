@@ -3,6 +3,7 @@ using Repositorio;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace UI.Model
 {
@@ -69,9 +70,21 @@ namespace UI.Model
             try
             {
                 var cliente = await _clienteRepositorio.GetByIdAsync(clienteId);
-
                 if (cliente == null)
                     return false;
+
+                if (formaPagamento == "Saldo")
+                {
+                    if (cliente.Saldo < valorTotal)
+                        throw new Exception($"Saldo insuficiente! Disponível: {cliente.Saldo:C}");
+                }
+
+                foreach (var produto in produtos)
+                {
+                    var produtoAtual = await _produtoRepositorio.GetByIdAsync(produto.IdProduto);
+                    if (produtoAtual == null || produtoAtual.QuantidadeEstoque < 1)
+                        throw new Exception($"Produto '{produto.Nome}' sem estoque disponível.");
+                }
 
                 Vendas venda = new Vendas
                 {
@@ -100,14 +113,21 @@ namespace UI.Model
                         PrecoUnitario = precoUnitario,
                         Subtotal = precoUnitario * quantidade
                     });
+
+                    await _produtoRepositorio.DescontarEstoque(produto.IdProduto, quantidade);
                 }
 
                 _vendaProdutoRepositorio.AddRange(vendaProdutos);
+                await _vendaProdutoRepositorio.SaveChangesAsync();
 
-                return await _vendaProdutoRepositorio.SaveChangesAsync();
+                if (formaPagamento == "Saldo")
+                    await _clienteRepositorio.DescontarSaldo(clienteId, valorTotal);
+
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
         }
@@ -161,6 +181,34 @@ namespace UI.Model
                 if (cliente == null)
                     return false;
 
+                if (vendaExistente.FormaPagamento == "Saldo")
+                    await _clienteRepositorio.DescontarSaldo(clienteId, -vendaExistente.ValorTotal);
+
+                if (formaPagamento == "Saldo")
+                {
+                    var clienteAtualizado = await _clienteRepositorio.GetByIdAsync(clienteId);
+                    if (clienteAtualizado.Saldo < valorTotal)
+                        throw new Exception($"Saldo insuficiente! Disponível: {clienteAtualizado.Saldo:C}");
+                }
+
+                var itensVendaAntigos = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
+
+                if (itensVendaAntigos != null && itensVendaAntigos.Count > 0)
+                {
+                    foreach (var item in itensVendaAntigos)
+                        await _produtoRepositorio.DescontarEstoque(item.ProdutoId, -item.Quantidade);
+
+                    _vendaProdutoRepositorio.RemoveRange(itensVendaAntigos);
+                    await _vendaProdutoRepositorio.SaveChangesAsync();
+                }
+
+                foreach (var produto in produtos)
+                {
+                    var produtoAtual = await _produtoRepositorio.GetByIdAsync(produto.IdProduto);
+                    if (produtoAtual == null || produtoAtual.QuantidadeEstoque < 1)
+                        throw new Exception($"Produto '{produto.Nome}' sem estoque disponível.");
+                }
+
                 vendaExistente.ClienteId = clienteId;
                 vendaExistente.ValorTotal = valorTotal;
                 vendaExistente.FormaPagamento = formaPagamento;
@@ -168,14 +216,6 @@ namespace UI.Model
 
                 _vendaRepositorio.Update(vendaExistente);
                 await _vendaRepositorio.SaveChangesAsync();
-
-                var itensVendaAntigos = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
-
-                if (itensVendaAntigos != null && itensVendaAntigos.Count > 0)
-                {
-                    _vendaProdutoRepositorio.RemoveRange(itensVendaAntigos);
-                    await _vendaProdutoRepositorio.SaveChangesAsync();
-                }
 
                 List<ProdutoVendas> vendaProdutosNovos = new List<ProdutoVendas>();
 
@@ -192,14 +232,21 @@ namespace UI.Model
                         PrecoUnitario = precoUnitario,
                         Subtotal = precoUnitario * quantidade
                     });
+
+                    await _produtoRepositorio.DescontarEstoque(produto.IdProduto, quantidade);
                 }
 
                 _vendaProdutoRepositorio.AddRange(vendaProdutosNovos);
+                await _vendaProdutoRepositorio.SaveChangesAsync();
 
-                return await _vendaProdutoRepositorio.SaveChangesAsync();
+                if (formaPagamento == "Saldo")
+                    await _clienteRepositorio.DescontarSaldo(clienteId, valorTotal);
+
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
         }

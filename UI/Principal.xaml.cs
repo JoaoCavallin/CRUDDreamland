@@ -283,5 +283,17 @@ namespace UI
                 MessageBox.Show("Selecione um cliente");
             }
         }
+
+        public void BtnSair(object sender, RoutedEventArgs e)
+        {
+            var confirm = MessageBox.Show("Deseja deslogar?", "Confirmação",
+                MessageBoxButton.YesNo);
+            if (confirm == MessageBoxResult.Yes)
+            {
+                Login login = new Login();
+                login.Show();
+                this.Close();
+            }
+        }
     }
 }

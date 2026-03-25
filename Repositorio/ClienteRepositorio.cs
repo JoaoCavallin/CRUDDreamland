@@ -46,5 +46,18 @@ namespace Repositorio
             return await _context.Clientes
                 .FirstOrDefaultAsync(c => c.ClienteDocumento == documento);
         }
+        public async Task DescontarSaldo(int clienteId, decimal valor)
+        {
+            var cliente = await _context.Clientes
+                .Where(c => c.IdCliente == clienteId)
+                .FirstOrDefaultAsync();
+
+            if (cliente != null)
+            {
+                cliente.Saldo -= valor;
+                _context.Clientes.Update(cliente);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

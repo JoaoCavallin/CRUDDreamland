@@ -37,7 +37,24 @@ namespace Repositorio
 
         public async Task<Produtos> GetByIdAsync(int ProdutoId)
         {
-            return await _context.Produtos.Where(P => P.IdProduto == ProdutoId).FirstOrDefaultAsync();
+            return await _context.Produtos
+                .AsNoTracking()
+                .Where(P => P.IdProduto == ProdutoId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task DescontarEstoque(int produtoId, int quantidade)
+        {
+            var produto = await _context.Produtos
+                .Where(p => p.IdProduto == produtoId)
+                .FirstOrDefaultAsync();
+
+            if (produto != null)
+            {
+                produto.QuantidadeEstoque -= quantidade;
+                _context.Produtos.Update(produto);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

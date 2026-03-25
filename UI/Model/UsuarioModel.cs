@@ -2,6 +2,7 @@
 using Repositorio;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace UI.Model
@@ -59,6 +60,15 @@ namespace UI.Model
 
                 return sb.ToString();
             }
+        }
+
+        // ================ Validar Email =================
+
+
+        public bool ValidarEmail(string email)
+        {
+            // Valida formato básico de e-mail
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }
 }

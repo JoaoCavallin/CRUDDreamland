@@ -41,7 +41,6 @@ namespace UI
 
                 boxTamanho.Text = _produto.Tamanho;
 
-                // 🔥 NOVO
                 boxEstoque.Text = _produto.QuantidadeEstoque.ToString();
 
                 if (!string.IsNullOrEmpty(_produto.Categoria))
@@ -62,33 +61,59 @@ namespace UI
 
         private async Task btnConfirmarProduto(object sender, RoutedEventArgs e)
         {
-            
             if (string.IsNullOrWhiteSpace(boxNome.Text))
             {
-                MessageBox.Show("Nome é obrigatório");
+                MessageBox.Show("Nome é obrigatório.");
                 return;
             }
 
-            if (!decimal.TryParse(boxPrecoVenda.Text, out var preco))
+            if (boxNome.Text.Length > 100)
             {
-                MessageBox.Show("Preço de venda inválido");
+                MessageBox.Show("Nome deve ter no máximo 100 caracteres.");
+                return;
+            }
+
+            if (!decimal.TryParse(boxPrecoVenda.Text, out var preco) || preco <= 0)
+            {
+                MessageBox.Show("Preço de venda inválido. Deve ser maior que zero.");
                 return;
             }
 
             decimal.TryParse(boxPrecoCusto.Text, out var custo);
 
-            
-            if (!int.TryParse(boxEstoque.Text, out var estoque))
+            if (custo < 0)
             {
-                MessageBox.Show("Estoque inválido");
+                MessageBox.Show("Preço de custo não pode ser negativo.");
                 return;
+            }
+
+            if (!int.TryParse(boxEstoque.Text, out var estoque) || estoque < 0)
+            {
+                MessageBox.Show("Estoque inválido. Deve ser um número inteiro maior ou igual a zero.");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(boxCodBarras.Text))
+            {
+                var codBarras = boxCodBarras.Text.Trim();
+                if (!System.Text.RegularExpressions.Regex.IsMatch(codBarras, @"^\d+$"))
+                {
+                    MessageBox.Show("Código de barras deve conter apenas números.");
+                    return;
+                }
+
+                if (codBarras.Length != 8 && codBarras.Length != 12 && codBarras.Length != 13 && codBarras.Length != 14)
+                {
+                    MessageBox.Show("Código de barras inválido. Deve ter 8, 12, 13 ou 14 dígitos.");
+                    return;
+                }
             }
 
             if (boxCategoria.SelectedItem == null ||
                 boxGenero.SelectedItem == null ||
                 boxCondicao.SelectedItem == null)
             {
-                MessageBox.Show("Selecione Categoria, Gênero e Condição");
+                MessageBox.Show("Selecione Categoria, Gênero e Condição.");
                 return;
             }
 
@@ -105,7 +130,7 @@ namespace UI
                     categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
-                    quantidadeEstoque: estoque, 
+                    quantidadeEstoque: estoque,
                     marca: boxMarca.Text,
                     tamanho: boxTamanho.Text,
                     genero: genero,
@@ -126,7 +151,7 @@ namespace UI
                     categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
-                    quantidadeEstoque: estoque, 
+                    quantidadeEstoque: estoque,
                     marca: boxMarca.Text,
                     tamanho: boxTamanho.Text,
                     genero: genero,
@@ -144,6 +169,11 @@ namespace UI
         private void ApenasNumero(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !decimal.TryParse(e.Text, out _);
+        }
+
+        private void ApenasInteiro(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !int.TryParse(e.Text, out _);
         }
     }
 }

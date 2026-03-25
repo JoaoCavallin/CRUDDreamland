@@ -2,8 +2,10 @@
 using Repositorio;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace UI.Model
 {
@@ -97,6 +99,34 @@ namespace UI.Model
                 c.ClienteNome == nome &&
                 c.ClienteDocumento == cpf
             );
+        }
+
+        // =============== Validações malucas ===============
+
+        public bool ValidarCPF(string cpf)
+        {
+            cpf = Regex.Replace(cpf, @"\D", "");
+
+            if (cpf.Length != 11)
+                return false;
+
+            return true;
+        }
+
+        public bool ValidarEmail(string email)
+        {
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.com$");
+        }
+
+        public bool ValidarTelefone(string telefone)
+        {
+            string numeros = Regex.Replace(telefone, @"\D", "");
+            return numeros.Length >= 10 && numeros.Length <= 13;
+        }
+
+        private void ApenasNumero(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !decimal.TryParse(e.Text, out _);
         }
     }
 }

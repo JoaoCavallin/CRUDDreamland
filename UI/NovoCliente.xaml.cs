@@ -39,22 +39,32 @@ namespace UI
 
         private async Task ConfirmarCliente()
         {
-            // VALIDAÇÃO
             if (string.IsNullOrWhiteSpace(boxNome.Text))
             {
                 MessageBox.Show("Nome é obrigatório");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(boxCPF.Text))
+            if (string.IsNullOrWhiteSpace(boxCPF.Text) || !_cModel.ValidarCPF(boxCPF.Text))
             {
-                MessageBox.Show("CPF é obrigatório");
+                MessageBox.Show("CPF inválido.");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(boxEmail.Text) && !_cModel.ValidarEmail(boxEmail.Text))
+            {
+                MessageBox.Show("E-mail inválido.");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(boxTelefone.Text) && !_cModel.ValidarTelefone(boxTelefone.Text))
+            {
+                MessageBox.Show("Telefone inválido.");
                 return;
             }
 
             decimal.TryParse(boxSaldo.Text, out var saldo);
 
-            // NOVO CLIENTE
             if (_cliente == null)
             {
                 await _cModel.AdicionarCliente(
@@ -65,9 +75,7 @@ namespace UI
                     saldo: saldo,
                     ativo: boxAtivo.IsChecked == true
                 );
-
             }
-            // EDITAR CLIENTE
             else
             {
                 await _cModel.EditarCliente(
@@ -79,7 +87,6 @@ namespace UI
                     saldo: saldo,
                     ativo: boxAtivo.IsChecked == true
                 );
-
             }
 
             this.Close();

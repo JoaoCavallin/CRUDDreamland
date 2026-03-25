@@ -22,11 +22,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Usuário -->
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Usuário: "/>
-                    <TextBlock Name="BoxUsuarioAtual" Text="Admin" FontWeight="Bold"/>
-                </StackPanel>
+                <!-- Usuário + Botão Sair -->
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Usuário: "/>
+                        <TextBlock x:Name="BoxUsuarioAtual" Text="Admin" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <Button Content="Sair"
+                            Width="80"
+                            HorizontalAlignment="Right"
+                            Click="BtnSair"/>
+                </Grid>
 
                 <!-- Logo -->
                 <Image Source="/DreamLand__2_-removebg-preview.png"
@@ -36,7 +43,7 @@
                        Grid.Row="1"/>
 
                 <!-- TABS -->
-                <TabControl Grid.Row="2" TabStripPlacement="Left" Background="Transparent" >
+                <TabControl Grid.Row="2" TabStripPlacement="Left" Background="Transparent">
 
                     <!-- ================= PRODUTOS ================= -->
                     <TabItem Header="Produtos">
@@ -75,19 +82,15 @@
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                       RowDetailsVisibilityMode="Collapsed">
 
-                                <!-- GRID PRINCIPAL (ENXUTO) -->
                                 <DataGrid.Columns>
-
                                     <DataGridTextColumn Header="ID" Binding="{Binding IdProduto}" Width="*"/>
                                     <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
                                     <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="*"/>
                                     <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
                                     <DataGridTextColumn Header="Preço" Binding="{Binding Preco, StringFormat=C}" Width="*"/>
                                     <DataGridTextColumn Header="Estoque" Binding="{Binding QuantidadeEstoque}" Width="*"/>
-
                                 </DataGrid.Columns>
 
-                                <!-- DETALHES EXPANDIDOS -->
                                 <DataGrid.RowDetailsTemplate>
                                     <DataTemplate>
                                         <Border Background="#F3F3F3" Padding="10" CornerRadius="10">
@@ -138,18 +141,15 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!--  Busca por ID -->
                             <TextBox Name="boxBuscaVenda"
                                      Width="250"
                                      Margin="10"
                                      Grid.Row="0"
                                      TextChanged="BuscarVenda"/>
-             
 
-                            <!--  Botões -->
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
-                                        Grid.Row="1">   
+                                        Grid.Row="1">
 
                                 <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarVenda"/>
                                 <Button Content="Nova Venda" Width="140" Margin="10" Click="BtnNovaVendaDialog"/>
@@ -158,7 +158,6 @@
 
                             </StackPanel>
 
-                            <!--  GRID -->
                             <DataGrid Name="gridVendas"
                                       Grid.Row="2"
                                       AutoGenerateColumns="False"
@@ -171,7 +170,7 @@
                                     <DataGridTextColumn Header="Total" Binding="{Binding ValorTotal, StringFormat=C}" Width="*"/>
                                     <DataGridTextColumn Header="Pagamento" Binding="{Binding FormaPagamento}" Width="*"/>
                                     <DataGridTextColumn Header="Status" Binding="{Binding StatusVenda}" Width="*"/>
-                                    <DataGridTextColumn Header="Data" Binding="{Binding DataVenda, StringFormat=dd/MM/yyyy HH:mm}" Width="*"/>
+                                    <DataGridTextColumn Header="Data" Binding="{Binding DataVenda, StringFormat=dd/MM/yyyy}" Width="*"/>
                                 </DataGrid.Columns>
 
                             </DataGrid>
@@ -190,14 +189,12 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- 🔍 Busca -->
                             <TextBox Name="boxBuscaCliente"
                                      Width="250"
                                      Margin="10"
                                      Grid.Row="0"
                                      TextChanged="BuscarCliente"/>
 
-                            <!-- 🔘 Botões -->
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         Grid.Row="1">
@@ -209,11 +206,10 @@
 
                             </StackPanel>
 
-                            <!-- 📊 GRID -->
                             <DataGrid Name="gridClientes"
-                                            Grid.Row="2"
-                                            AutoGenerateColumns="False"
-                                            RowHeight="32">
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      RowHeight="32">
 
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding IdCliente}" Width="*"/>
