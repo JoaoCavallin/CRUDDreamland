@@ -15,9 +15,6 @@ namespace Dominio
 
         public Clientes Cliente { get; set; }
 
-        [MaxLength(100)]
-        public string ClienteNome { get; set; }
-
         public DateTime DataVenda { get; set; } = DateTime.Now;
 
         [Required]

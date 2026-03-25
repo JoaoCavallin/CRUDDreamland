@@ -1,5 +1,4 @@
 ﻿using Dominio;
-using Dominio.Enum;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
@@ -11,26 +10,35 @@ namespace UI
     {
         VendaModel vModel = new VendaModel();
         List<Produtos> produtos = new List<Produtos>();
-        private int idVendaEdicao = -1; 
 
-        public NovaVenda(string nomeCliente, string cpfCliente)
+        private int idVendaEdicao = -1;
+        private int _clienteId;
+
+        public NovaVenda(int clienteId, string nomeCliente, string cpfCliente)
         {
             InitializeComponent();
+
+            _clienteId = clienteId;
+
             blockNomeCliente.Text = nomeCliente;
             blockCpfCliente.Text = cpfCliente;
         }
 
-        public NovaVenda(int idVenda, string nomeCliente, string cpfCliente, decimal valorTotal, List<Produtos> itens = null)
+        //  EDIÇÃO
+        public NovaVenda(int idVenda, int clienteId, string nomeCliente, string cpfCliente, decimal valorTotal, List<Produtos> itens = null)
         {
             InitializeComponent();
+
             idVendaEdicao = idVenda;
+            _clienteId = clienteId;
+
             blockNomeCliente.Text = nomeCliente;
             blockCpfCliente.Text = cpfCliente;
             blockTotal.Text = valorTotal.ToString();
-            produtos = itens != null ? new List<Produtos>(itens) : new List<Produtos>();
-            ConfirmarVenda.Content = "Atualizar Venda";
 
-            // Se tiver coleção com quantidades, preencha `gridVendaProduto` aqui
+            produtos = itens != null ? new List<Produtos>(itens) : new List<Produtos>();
+
+            ConfirmarVenda.Content = "Atualizar Venda";
         }
 
         private async void boxCodProduto_KeyUp(object sender, KeyEventArgs e)
@@ -38,6 +46,7 @@ namespace UI
             if (e.Key == Key.Enter)
             {
                 var produto = await vModel.ProcurarProduto(int.Parse(boxCodProduto.Text));
+
                 if (produto != null)
                 {
                     blockNomeProduto.Text = produto.Descricao;
@@ -51,60 +60,75 @@ namespace UI
 
         private async void boxQuantidade_KeyUp(object sender, KeyEventArgs e)
         {
-
             if (e.Key == Key.Enter)
             {
                 int codigoProduto = int.Parse(boxCodProduto.Text);
+
                 Produtos produto = await vModel.ProcurarProduto(codigoProduto);
+
+                if (produto == null)
+                {
+                    MessageBox.Show("Produto inválido!");
+                    return;
+                }
+
                 produtos.Add(produto);
 
                 var quantidade = int.Parse(boxQuantidade.Text);
-                NovaVendaCollection vendas = new NovaVendaCollection(produto.IdProduto, produto.Descricao, produto.Preco, quantidade);
+
+                NovaVendaCollection vendas = new NovaVendaCollection(
+                    produto.IdProduto,
+                    produto.Descricao,
+                    produto.Preco,
+                    quantidade
+                );
 
                 gridVendaProduto.Items.Add(vendas);
 
-                blockTotal.Text = (decimal.Parse(blockTotal.Text) + vendas.Total).ToString();
+                blockTotal.Text = (
+                    decimal.Parse(blockTotal.Text) + vendas.Total
+                ).ToString();
             }
         }
 
         private async void btnConfirmarVenda(object sender, RoutedEventArgs e)
         {
-            decimal total;
-            if (!decimal.TryParse(blockTotal.Text, out total))
+            if (!decimal.TryParse(blockTotal.Text, out decimal total))
             {
                 MessageBox.Show("Total inválido.");
                 return;
             }
 
             bool status;
+
             if (idVendaEdicao == -1)
             {
-                // criar nova venda
-                status = await vModel.NovaVenda(blockCpfCliente.Text, blockNomeCliente.Text, total, produtos);
+                status = await vModel.NovaVenda(
+                    _clienteId,
+                    total,
+                    produtos
+                );
+
                 if (status)
                 {
                     MessageBox.Show("Venda cadastrada com sucesso!");
                     Close();
-                    MessageBoxResult result = MessageBox.Show("Deseja incluir nome e cpf do cliente?", "Nome e CPF do Cliente", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                    switch (result)
-                    {
-                        case MessageBoxResult.Yes:
-                            new NomeCpf().ShowDialog();
-                            break;
-                        case MessageBoxResult.No:
-                            new NovaVenda("Não informado", "Não informado").ShowDialog();
-                            break;
-                    }
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao cadastrar venda!", "ERRO", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Erro ao cadastrar venda!", "ERRO",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                // editar venda existente
-                status = await vModel.EditarVenda(idVendaEdicao, blockCpfCliente.Text, blockNomeCliente.Text, total, produtos);
+                status = await vModel.EditarVenda(
+                    idVendaEdicao,
+                    _clienteId,
+                    total,
+                    produtos
+                );
+
                 if (status)
                 {
                     MessageBox.Show("Venda atualizada com sucesso!");
@@ -112,7 +136,8 @@ namespace UI
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao atualizar venda!", "ERRO", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Erro ao atualizar venda!", "ERRO",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

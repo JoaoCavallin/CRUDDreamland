@@ -88,5 +88,15 @@ namespace UI.Model
 
             MessageBox.Show("Cliente atualizado com sucesso!");
         }
+
+        public async Task<Clientes> BuscarPorNomeCpf(string nome, string cpf)
+        {
+            var clientes = await _clienteRepositorio.GetAllAsync();
+
+            return clientes.FirstOrDefault(c =>
+                c.ClienteNome == nome &&
+                c.ClienteDocumento == cpf
+            );
+        }
     }
 }
