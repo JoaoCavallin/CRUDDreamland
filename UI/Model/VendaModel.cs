@@ -137,6 +137,25 @@ namespace UI.Model
         {
             try
             {
+                // 1. Buscar a venda
+                var venda = await _vendaRepositorio.GetByIdAsync(idVenda);
+
+                if (venda == null)
+                    return false;
+
+                // 2. Buscar cliente
+                var cliente = await _clienteRepositorio.GetByIdAsync(venda.ClienteId);
+
+                if (cliente == null)
+                    return false;
+
+                // 3. Reembolsar saldo
+                cliente.Saldo += venda.ValorTotal;
+
+                _clienteRepositorio.Update(cliente);
+                await _clienteRepositorio.SaveChangesAsync();
+
+                // 4. Remover itens da venda
                 var itensVenda = await _vendaProdutoRepositorio.GetByVendaIdAsync(idVenda);
 
                 if (itensVenda != null && itensVenda.Count > 0)
@@ -145,11 +164,7 @@ namespace UI.Model
                     await _vendaProdutoRepositorio.SaveChangesAsync();
                 }
 
-                var venda = await _vendaRepositorio.GetByIdAsync(idVenda);
-
-                if (venda == null)
-                    return false;
-
+                // 5. Remover venda
                 _vendaRepositorio.Remove(venda);
 
                 return await _vendaRepositorio.SaveChangesAsync();
