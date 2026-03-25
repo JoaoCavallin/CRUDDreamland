@@ -34,7 +34,6 @@ namespace UI
 
             gridVendaProduto.ItemsSource = itensVenda;
 
-            // 🔥 limpar estado
             itensVenda.Clear();
             produtos.Clear();
             AtualizarTotal();
@@ -58,12 +57,11 @@ namespace UI
 
             ConfirmarVenda.Content = "Atualizar Venda";
 
-            // 🔥 carregar itens se vierem
             if (itens != null)
             {
                 foreach (var p in itens)
                 {
-                    var item = new NovaVendaGridItem(
+                    var item = new NovaVendaCollection(
                         p.IdProduto,
                         p.Nome,
                         p.Preco,
@@ -129,7 +127,7 @@ namespace UI
 
                 produtos.Add(produto);
 
-                var vendaItem = new NovaVendaGridItem(
+                var vendaItem = new NovaVendaCollection(
                     produto.IdProduto,
                     produto.Nome,
                     produto.Preco,
@@ -194,17 +192,6 @@ namespace UI
                     formaPagamento.ToString(),
                     statusVenda.ToString()
                 );
-
-                if (status)
-                {
-                    MessageBox.Show("Venda cadastrada com sucesso!");
-                    Close();
-                }
-                else
-                {
-                    MessageBox.Show("Erro ao cadastrar venda!", "ERRO",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
             }
             else
             {
@@ -216,24 +203,24 @@ namespace UI
                     formaPagamento.ToString(),
                     statusVenda.ToString()
                 );
+            }
 
-                if (status)
-                {
-                    MessageBox.Show("Venda atualizada com sucesso!");
-                    Close();
-                }
-                else
-                {
-                    MessageBox.Show("Erro ao atualizar venda!", "ERRO",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            if (status)
+            {
+                MessageBox.Show("Venda salva com sucesso!");
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Erro ao salvar venda!", "ERRO",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // ================= REMOVER ITEM =================
         private void BtnRemoverSelecionado(object sender, RoutedEventArgs e)
         {
-            var item = gridVendaProduto.SelectedItem as NovaVendaGridItem;
+            var item = gridVendaProduto.SelectedItem as NovaVendaCollection;
 
             if (item == null)
             {
@@ -248,25 +235,6 @@ namespace UI
                 produtos.Remove(produto);
 
             AtualizarTotal();
-        }
-    }
-
-    // ================= CLASSE DO GRID =================
-    class NovaVendaGridItem
-    {
-        public int ProdutoId { get; set; }
-        public string ProdutoNome { get; set; }
-        public decimal Preco { get; set; }
-        public int QuantidadeProduto { get; set; }
-        public decimal Total { get; set; }
-
-        public NovaVendaGridItem(int produtoId, string produtoNome, decimal preco, int quantidadeProduto)
-        {
-            ProdutoId = produtoId;
-            ProdutoNome = produtoNome;
-            Preco = preco;
-            QuantidadeProduto = quantidadeProduto;
-            Total = quantidadeProduto * preco;
         }
     }
 }

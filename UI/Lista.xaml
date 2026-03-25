@@ -25,11 +25,12 @@
                 <ImageBrush Stretch="Fill" />
             </DataGrid.Background>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="auto"/>
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Grid.Row="1" Content="Voltar" Width="320" Height="40" Margin="10,10,0,10" HorizontalAlignment="Left" Click="btnVoltar" Grid.ColumnSpan="2"/>
+        <Button Content="Excluir" Grid.Row="1" HorizontalAlignment="Right" Width="150" Height="40" Background="#FF4D4D"  Foreground="White" Click="BtnExcluir_Click" Grid.Column="1" Margin="10" />
     </Grid>
 </Window>

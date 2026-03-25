@@ -28,14 +28,12 @@ namespace UI.Model
 
             foreach (var p in produtos)
             {
-                lista.Add(new NovaVendaCollection
-                {
-                    ProdutoId = p.IdProduto,
-                    ProdutoNome = p.Nome,
-                    Preco = p.Preco,
-                    QuantidadeProduto = 1,
-                    Total = p.Preco
-                });
+                lista.Add(new NovaVendaCollection(
+                    p.IdProduto,
+                    p.Nome,
+                    p.Preco,
+                    1
+                ));
             }
 
             return lista;
@@ -215,5 +213,14 @@ namespace UI.Model
         public decimal Preco { get; set; }
         public int QuantidadeProduto { get; set; }
         public decimal Total { get; set; }
+
+        public NovaVendaCollection(int produtoId, string produtoNome, decimal preco, int quantidadeProduto)
+        {
+            ProdutoId = produtoId;
+            ProdutoNome = produtoNome;
+            Preco = preco;
+            QuantidadeProduto = quantidadeProduto;
+            Total = quantidadeProduto * preco;
+        }
     }
 }
