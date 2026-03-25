@@ -23,7 +23,7 @@ namespace UI.Model
             return await _vendaRepositorio.GetAllAsync();
         }
 
-        // ✅ NOVA VENDA COM CLIENTE_ID
+        //  NOVA VENDA COM CLIENTE_ID
         public async Task<bool> NovaVenda(
             int clienteId,
             decimal valorTotal,
@@ -105,7 +105,7 @@ namespace UI.Model
             }
         }
 
-        // ✅ EDITAR TAMBÉM USANDO ClienteId
+        //  EDITAR TAMBÉM USANDO ClienteId
         public async Task<bool> EditarVenda(
             int idVenda,
             int clienteId,
