@@ -28,8 +28,8 @@ namespace UI
 
             if (_produto != null)
             {
-                boxNome.Text = _produto.Nome;        
-                boxMarca.Text = _produto.Marca;     
+                boxNome.Text = _produto.Nome;
+                boxMarca.Text = _produto.Marca;
 
                 boxDescricao.Text = _produto.Descricao;
                 boxCodBarras.Text = _produto.CodigoBarras;
@@ -41,6 +41,9 @@ namespace UI
 
                 boxTamanho.Text = _produto.Tamanho;
 
+                // 🔥 NOVO
+                boxEstoque.Text = _produto.QuantidadeEstoque.ToString();
+
                 if (!string.IsNullOrEmpty(_produto.Categoria))
                     boxCategoria.SelectedItem = Enum.Parse(typeof(CategoriaProduto), _produto.Categoria);
 
@@ -51,13 +54,15 @@ namespace UI
                     boxCondicao.SelectedItem = Enum.Parse(typeof(Condicao), _produto.Condicao);
             }
         }
+
         private async void btnConfimarProduto_Click(object sender, RoutedEventArgs e)
         {
-           await btnConfirmarProduto(sender, e);
+            await btnConfirmarProduto(sender, e);
         }
+
         private async Task btnConfirmarProduto(object sender, RoutedEventArgs e)
         {
-            //   VALIDAÇÃO
+            
             if (string.IsNullOrWhiteSpace(boxNome.Text))
             {
                 MessageBox.Show("Nome é obrigatório");
@@ -72,6 +77,13 @@ namespace UI
 
             decimal.TryParse(boxPrecoCusto.Text, out var custo);
 
+            
+            if (!int.TryParse(boxEstoque.Text, out var estoque))
+            {
+                MessageBox.Show("Estoque inválido");
+                return;
+            }
+
             if (boxCategoria.SelectedItem == null ||
                 boxGenero.SelectedItem == null ||
                 boxCondicao.SelectedItem == null)
@@ -84,16 +96,16 @@ namespace UI
             var genero = boxGenero.SelectedItem.ToString();
             var condicao = boxCondicao.SelectedItem.ToString();
 
-            //  NOVO PRODUTO
+            // NOVO PRODUTO
             if (_produto == null)
             {
-               await _pModel.AdicionarProduto(
+                await _pModel.AdicionarProduto(
                     nome: boxNome.Text,
                     descricao: boxDescricao.Text,
                     categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
-                    quantidadeEstoque: 0,
+                    quantidadeEstoque: estoque, 
                     marca: boxMarca.Text,
                     tamanho: boxTamanho.Text,
                     genero: genero,
@@ -104,16 +116,17 @@ namespace UI
 
                 MessageBox.Show("Produto cadastrado com sucesso!");
             }
+            // EDITAR PRODUTO
             else
             {
-               await _pModel.EditarProduto(
+                await _pModel.EditarProduto(
                     id: _produto.IdProduto,
                     nome: boxNome.Text,
                     descricao: boxDescricao.Text,
                     categoria: categoria,
                     preco: preco,
                     custo: custo == 0 ? (decimal?)null : custo,
-                    quantidadeEstoque: _produto.QuantidadeEstoque,
+                    quantidadeEstoque: estoque, 
                     marca: boxMarca.Text,
                     tamanho: boxTamanho.Text,
                     genero: genero,
@@ -127,11 +140,10 @@ namespace UI
 
             this.Close();
         }
+
         private void ApenasNumero(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !decimal.TryParse(e.Text, out _);
         }
-
-
     }
 }

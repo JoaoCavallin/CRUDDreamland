@@ -2,22 +2,42 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Novo Produto"
-        Height="500" Width="720"
+        Height="550" Width="720"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
+    <Window.Background>
+        <ImageBrush ImageSource="/Copy of DreamLand.png"
+                    Stretch="UniformToFill"/>
+    </Window.Background>
+
     <Grid Margin="20">
 
+        <!-- LINHAS -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- 0 -->
             <RowDefinition Height="Auto"/>
+            <!-- 1 -->
             <RowDefinition Height="Auto"/>
+            <!-- 2 -->
             <RowDefinition Height="Auto"/>
+            <!-- 3 -->
             <RowDefinition Height="Auto"/>
+            <!-- 4 -->
             <RowDefinition Height="Auto"/>
+            <!-- 5 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 6 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 7 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 8 -->
             <RowDefinition Height="*"/>
+            <!-- 9 -->
         </Grid.RowDefinitions>
 
+        <!-- COLUNAS -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -46,8 +66,12 @@
         <Label Content="Preço de Custo" Grid.Row="4" Grid.Column="1"/>
         <TextBox Name="boxPrecoCusto" Grid.Row="5" Grid.Column="1" Margin="0,5,0,10"/>
 
+        <!-- ESTOQUE -->
+        <Label Content="Quantidade em Estoque" Grid.Row="6"/>
+        <TextBox Name="boxEstoque" Grid.Row="7" Margin="0,5,10,10"/>
+
         <!-- ENUMS + TAMANHO -->
-        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10">
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10">
 
             <StackPanel Width="150" Margin="0,0,10,0">
                 <Label Content="Categoria"/>
@@ -64,7 +88,6 @@
                 <ComboBox Name="boxCondicao"/>
             </StackPanel>
 
-            <!-- NOVO TAMANHO -->
             <StackPanel Width="100">
                 <Label Content="Tamanho"/>
                 <TextBox Name="boxTamanho"/>
@@ -73,7 +96,7 @@
         </StackPanel>
 
         <!-- ATIVO + BOTÕES -->
-        <Grid Grid.Row="7" Grid.ColumnSpan="2" Margin="0,20,0,0">
+        <Grid Grid.Row="9" Grid.ColumnSpan="2" Margin="0,20,0,0">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

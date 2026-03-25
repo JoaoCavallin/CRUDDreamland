@@ -22,6 +22,9 @@ namespace UI
                 if (emailValido)
                 {
                     MessageBox.Show("Cadastrado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Login login = new Login();
+                    login.Show();
+                    this.Close();
                 }
                 else
                 {

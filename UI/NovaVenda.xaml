@@ -6,8 +6,13 @@
         Height="720" Width="1024"
         WindowStartupLocation="CenterScreen">
 
+    <Window.Background>
+        <ImageBrush ImageSource="/Copy of DreamLand.png"
+                    Stretch="UniformToFill"/>
+    </Window.Background>
+    
     <Grid Margin="15">
-
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
@@ -53,12 +58,33 @@
                      KeyUp="boxQuantidade_KeyUp"/>
         </StackPanel>
 
+        <!-- ================= PAGAMENTO + STATUS ================= -->
+        <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" Orientation="Horizontal">
+
+            <!-- Forma de pagamento -->
+            <StackPanel Width="180" Margin="0,0,15,0">
+                <Label Content="Pagamento"/>
+                <ComboBox Name="boxPagamento"/>
+
+            </StackPanel>
+
+            <!-- Status -->
+            <StackPanel Width="180">
+                <Label Content="Status"/>
+                <ComboBox Name="boxStatus"/>
+            </StackPanel>
+
+        </StackPanel>
+
         <!-- ================= GRID ================= -->
         <DataGrid Name="gridVendaProduto"
           Grid.Row="3"
           Grid.ColumnSpan="2"
           AutoGenerateColumns="False"
-          AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}">
+          AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}" HorizontalAlignment="Left" Width="994">
+            <DataGrid.Background>
+                <ImageBrush/>
+            </DataGrid.Background>
 
             <DataGrid.Columns>
 
@@ -111,6 +137,18 @@
 
             <!-- Botões -->
             <StackPanel Orientation="Horizontal" Grid.Column="1">
+
+                <Button Content="🗑 Remover"
+                        Width="140"
+                        Margin="0"
+                        Background="#FF4D4D"
+                        Foreground="White"
+                        Click="BtnRemoverSelecionado"/>
+
+                <Button Content="Consultar"
+                        Width="140"
+                        Margin="10"
+                        Click="BtnConsultarProdutos"/>      
 
                 <Button Content="Cancelar"
                         Width="140"

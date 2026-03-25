@@ -13,16 +13,54 @@ namespace UI.Model
         private VendaRepositorio _vendaRepositorio = new VendaRepositorio();
         private ClienteRepositorio _clienteRepositorio = new ClienteRepositorio();
 
+        // ================= PRODUTO =================
         public async Task<Produtos> ProcurarProduto(int id)
         {
             return await _produtoRepositorio.GetByIdAsync(id);
         }
 
-        public async Task<Vendas[]> ListarVendas()
+        // ================= LISTAR PRODUTOS PRA GRID =================
+        public async Task<List<NovaVendaCollection>> ListarProdutosParaVenda()
         {
-            return await _vendaRepositorio.GetAllAsync();
+            var produtos = await _produtoRepositorio.GetAllAsync();
+
+            var lista = new List<NovaVendaCollection>();
+
+            foreach (var p in produtos)
+            {
+                lista.Add(new NovaVendaCollection
+                {
+                    ProdutoId = p.IdProduto,
+                    ProdutoNome = p.Nome,
+                    Preco = p.Preco,
+                    QuantidadeProduto = 1,
+                    Total = p.Preco
+                });
+            }
+
+            return lista;
         }
 
+        // ================= LISTAR VENDAS =================
+        public async Task<Vendas[]> ListarVendas()
+        {
+            var vendas = await _vendaRepositorio.GetAllAsync();
+
+            foreach (var venda in vendas)
+            {
+                var cliente = await _clienteRepositorio.GetByIdAsync(venda.ClienteId);
+
+                if (cliente != null)
+                {
+                    venda.ClienteNome = cliente.ClienteNome;
+                    venda.ClienteDocumento = cliente.ClienteDocumento;
+                }
+            }
+
+            return vendas;
+        }
+
+        // ================= NOVA VENDA =================
         public async Task<bool> NovaVenda(
             int clienteId,
             decimal valorTotal,
@@ -55,7 +93,6 @@ namespace UI.Model
                 {
                     int quantidade = 1;
                     decimal precoUnitario = produto.Preco;
-                    decimal subtotal = precoUnitario * quantidade;
 
                     vendaProdutos.Add(new ProdutoVendas
                     {
@@ -63,7 +100,7 @@ namespace UI.Model
                         VendaId = venda.IdVenda,
                         Quantidade = quantidade,
                         PrecoUnitario = precoUnitario,
-                        Subtotal = subtotal
+                        Subtotal = precoUnitario * quantidade
                     });
                 }
 
@@ -77,6 +114,7 @@ namespace UI.Model
             }
         }
 
+        // ================= EXCLUIR VENDA =================
         public async Task<bool> ExcluirVenda(int idVenda)
         {
             try
@@ -104,6 +142,7 @@ namespace UI.Model
             }
         }
 
+        // ================= EDITAR VENDA =================
         public async Task<bool> EditarVenda(
             int idVenda,
             int clienteId,
@@ -146,7 +185,6 @@ namespace UI.Model
                 {
                     int quantidade = 1;
                     decimal precoUnitario = produto.Preco;
-                    decimal subtotal = precoUnitario * quantidade;
 
                     vendaProdutosNovos.Add(new ProdutoVendas
                     {
@@ -154,7 +192,7 @@ namespace UI.Model
                         VendaId = idVenda,
                         Quantidade = quantidade,
                         PrecoUnitario = precoUnitario,
-                        Subtotal = subtotal
+                        Subtotal = precoUnitario * quantidade
                     });
                 }
 
@@ -167,5 +205,15 @@ namespace UI.Model
                 return false;
             }
         }
+    }
+
+    // ================= CLASSE DO GRID =================
+    public class NovaVendaCollection
+    {
+        public int ProdutoId { get; set; }
+        public string ProdutoNome { get; set; }
+        public decimal Preco { get; set; }
+        public int QuantidadeProduto { get; set; }
+        public decimal Total { get; set; }
     }
 }

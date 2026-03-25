@@ -31,7 +31,7 @@ namespace Repositorio
 
         public async Task<Clientes[]> GetAllAsync()
         {
-            return await _context.Clientes.ToArrayAsync();
+            return await _context.Clientes.AsNoTracking().ToArrayAsync();
         }
 
         public async Task<Clientes> GetByIdAsync(int clienteId)

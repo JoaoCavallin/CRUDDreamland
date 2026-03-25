@@ -105,16 +105,58 @@ namespace UI
 
         private async void BtnConsultarVenda(object sender, RoutedEventArgs e)
         {
-            gridVendas.ItemsSource = await _vModel.ListarVendas();
+            await AtualizarVendas();
         }
 
-        private void BtnEditarVenda(object sender, RoutedEventArgs e)
+        private async Task AtualizarVendas()
         {
-            var venda = gridVendas.SelectedItem;
+            var lista = await _vModel.ListarVendas();
+
+            gridVendas.ItemsSource = null;
+            gridVendas.ItemsSource = lista;
+
+            gridVendas.Items.Refresh();
+        }
+
+        private async void BuscarVenda(object sender, TextChangedEventArgs e)
+        {
+            var texto = boxBuscaVenda.Text;
+
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                await AtualizarVendas();
+                return;
+            }
+
+            var lista = await _vModel.ListarVendas();
+
+            if (int.TryParse(texto, out int id))
+            {
+                gridVendas.ItemsSource = lista
+                    .Where(v => v.IdVenda == id)
+                    .ToList();
+            }
+            else
+            {
+                gridVendas.ItemsSource = lista;
+            }
+        }
+        private async void BtnEditarVenda(object sender, RoutedEventArgs e)
+        {
+            var venda = gridVendas.SelectedItem as Vendas;
 
             if (venda != null)
             {
-                MessageBox.Show("Tela de edição de venda ainda não implementada 😄");
+                new NovaVenda(
+                    venda.IdVenda,
+                    venda.ClienteId,
+                    venda.ClienteNome,
+                    venda.ClienteDocumento,
+                    venda.ValorTotal,
+                    null // depois você pode passar os produtos da venda aqui
+                ).ShowDialog();
+
+                await AtualizarVendas();
             }
             else
             {
@@ -166,21 +208,54 @@ namespace UI
 
         private async void BtnConsultarClientes(object sender, RoutedEventArgs e)
         {
-            gridClientes.ItemsSource = await _cModel.ListarClientes();
+            await AtualizarClientes();
+        }
+        private async Task AtualizarClientes()
+        {
+            var lista = await _cModel.ListarClientes();
+
+            gridClientes.ItemsSource = null;
+            gridClientes.ItemsSource = lista;
+
+            gridClientes.Items.Refresh();
         }
 
-        private void BtnNovoCliente(object sender, RoutedEventArgs e)
+        private async void BuscarCliente(object sender, TextChangedEventArgs e)
         {
-            MessageBox.Show("Tela de cadastro de cliente ainda não criada 😄");
+            var texto = boxBuscaCliente.Text.ToLower();
+
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                await AtualizarClientes();
+                return;
+            }
+
+            var lista = await _cModel.ListarClientes();
+
+            gridClientes.ItemsSource = lista
+                .Where(c =>
+                    c.ClienteNome.ToLower().Contains(texto) ||
+                    c.ClienteDocumento.ToLower().Contains(texto) ||
+                    (c.ClienteEmail != null && c.ClienteEmail.ToLower().Contains(texto)) ||
+                    (c.ClienteTelefone != null && c.ClienteTelefone.ToLower().Contains(texto))
+                )
+                .ToList();
         }
 
-        private void BtnEditarCliente(object sender, RoutedEventArgs e)
+        private async void BtnNovoCliente(object sender, RoutedEventArgs e)
         {
-            var cliente = gridClientes.SelectedItem;
+            new NovoCliente().ShowDialog();
+            await AtualizarClientes();
+        }
+
+        private async void BtnEditarCliente(object sender, RoutedEventArgs e)
+        {
+            var cliente = gridClientes.SelectedItem as Clientes;
 
             if (cliente != null)
             {
-                MessageBox.Show("Tela de edição de cliente ainda não criada 😄");
+                new NovoCliente(cliente).ShowDialog();
+                await AtualizarClientes();
             }
             else
             {
@@ -188,9 +263,9 @@ namespace UI
             }
         }
 
-        private void BtnExcluirCliente(object sender, RoutedEventArgs e)
+        private async void BtnExcluirCliente(object sender, RoutedEventArgs e)
         {
-            dynamic cliente = gridClientes.SelectedItem;
+            var cliente = gridClientes.SelectedItem as Clientes;
 
             if (cliente != null)
             {
@@ -199,8 +274,8 @@ namespace UI
 
                 if (confirm == MessageBoxResult.Yes)
                 {
-                    _cModel.ExcluirCliente(cliente.IdCliente);
-                    BtnConsultarClientes(null, null);
+                    await _cModel.ExcluirCliente(cliente.IdCliente);
+                    await AtualizarClientes();
                 }
             }
             else

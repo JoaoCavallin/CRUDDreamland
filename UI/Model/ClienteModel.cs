@@ -16,7 +16,7 @@ namespace UI.Model
             return await _clienteRepositorio.GetAllAsync();
         }
 
-        public async void AdicionarCliente(
+        public async Task AdicionarCliente(
             string documento,
             string nome,
             string email,
@@ -42,7 +42,7 @@ namespace UI.Model
             MessageBox.Show("Cliente cadastrado com sucesso!");
         }
 
-        public void ExcluirCliente(int id)
+        public async Task ExcluirCliente(int id)
         {
             using (var context = new Context())
             {
@@ -61,7 +61,7 @@ namespace UI.Model
             }
         }
 
-        public async void EditarCliente(
+        public async Task EditarCliente(
             int id,
             string documento,
             string nome,

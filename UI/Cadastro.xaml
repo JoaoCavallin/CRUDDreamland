@@ -8,6 +8,9 @@
         
         Height="550" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Copy of DreamLand.png" Stretch="UniformToFill"/>
+        </Grid.Background>
         <TextBlock HorizontalAlignment="Center" Margin="20" FontWeight="Bold" FontSize="22" Text="CADASTRAR USUÁRIO" VerticalAlignment="Top"/>
         <Label Content="Nome" HorizontalAlignment="Left" Margin="40,68,0,0" VerticalAlignment="Top"/>
         <TextBox Name="boxNome" MaxLength="40" Margin="40,99,40,0" TextWrapping="NoWrap"  VerticalAlignment="Top"/>

@@ -9,7 +9,7 @@
 
         <!-- Fundo -->
         <Grid.Background>
-            <ImageBrush ImageSource="/Copy of DreamLand.png"/>
+            <ImageBrush ImageSource="/Copy of DreamLand.png" Stretch="UniformToFill"/>
         </Grid.Background>
 
         <Border Margin="25" Padding="20" CornerRadius="18" Background="Transparent" Opacity="0.95">
@@ -30,7 +30,7 @@
 
                 <!-- Logo -->
                 <Image Source="/DreamLand__2_-removebg-preview.png"
-                       Height="80"
+                       Height="100"
                        HorizontalAlignment="Center"
                        Margin="0,20,0,10"
                        Grid.Row="1"/>
@@ -78,11 +78,12 @@
                                 <!-- GRID PRINCIPAL (ENXUTO) -->
                                 <DataGrid.Columns>
 
-                                    <DataGridTextColumn Header=" ID" Binding="{Binding IdProduto}" Width="*"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdProduto}" Width="*"/>
                                     <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
                                     <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="*"/>
                                     <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
-                                    <DataGridTextColumn Header="Preço" Binding="{Binding Preco}" Width="*"/>
+                                    <DataGridTextColumn Header="Preço" Binding="{Binding Preco, StringFormat=C}" Width="*"/>
+                                    <DataGridTextColumn Header="Estoque" Binding="{Binding QuantidadeEstoque}" Width="*"/>
 
                                 </DataGrid.Columns>
 
@@ -133,10 +134,22 @@
 
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <!--  Busca por ID -->
+                            <TextBox Name="boxBuscaVenda"
+                                     Width="250"
+                                     Margin="10"
+                                     Grid.Row="0"
+                                     TextChanged="BuscarVenda"/>
+             
+
+                            <!--  Botões -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Grid.Row="1">   
 
                                 <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarVenda"/>
                                 <Button Content="Nova Venda" Width="140" Margin="10" Click="BtnNovaVendaDialog"/>
@@ -145,22 +158,20 @@
 
                             </StackPanel>
 
+                            <!--  GRID -->
                             <DataGrid Name="gridVendas"
-                                      Grid.Row="1"
+                                      Grid.Row="2"
                                       AutoGenerateColumns="False"
                                       RowHeight="32">
 
                                 <DataGrid.Columns>
-
                                     <DataGridTextColumn Header="ID" Binding="{Binding IdVenda}" Width="*"/>
                                     <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNome}" Width="*"/>
-                                    <DataGridTextColumn Header="Total" Binding="{Binding ValorTotal}" Width="*"/>
+                                    <DataGridTextColumn Header="CPF" Binding="{Binding ClienteDocumento}" Width="*"/>
+                                    <DataGridTextColumn Header="Total" Binding="{Binding ValorTotal, StringFormat=C}" Width="*"/>
                                     <DataGridTextColumn Header="Pagamento" Binding="{Binding FormaPagamento}" Width="*"/>
                                     <DataGridTextColumn Header="Status" Binding="{Binding StatusVenda}" Width="*"/>
-                                    <DataGridTextColumn Header="Data"
-                                        Binding="{Binding DataVenda, StringFormat=dd/MM/yyyy HH:mm}"
-                                        Width="*"/>
-
+                                    <DataGridTextColumn Header="Data" Binding="{Binding DataVenda, StringFormat=dd/MM/yyyy HH:mm}" Width="*"/>
                                 </DataGrid.Columns>
 
                             </DataGrid>
@@ -175,10 +186,21 @@
 
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <!-- 🔍 Busca -->
+                            <TextBox Name="boxBuscaCliente"
+                                     Width="250"
+                                     Margin="10"
+                                     Grid.Row="0"
+                                     TextChanged="BuscarCliente"/>
+
+                            <!-- 🔘 Botões -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Grid.Row="1">
 
                                 <Button Content="Consultar" Width="140" Margin="10" Click="BtnConsultarClientes"/>
                                 <Button Content="Cadastrar" Width="140" Margin="10" Click="BtnNovoCliente"/>
@@ -187,19 +209,19 @@
 
                             </StackPanel>
 
+                            <!-- 📊 GRID -->
                             <DataGrid Name="gridClientes"
-                                      Grid.Row="1"
-                                      AutoGenerateColumns="False"
-                                      RowHeight="32">
+                                            Grid.Row="2"
+                                            AutoGenerateColumns="False"
+                                            RowHeight="32">
 
                                 <DataGrid.Columns>
-
                                     <DataGridTextColumn Header="ID" Binding="{Binding IdCliente}" Width="*"/>
-                                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
-                                    <DataGridTextColumn Header="Telefone" Binding="{Binding Telefone}" Width="*"/>
-                                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
-                                    <DataGridTextColumn Header="CPF" Binding="{Binding CPF}" Width="*"/>
-
+                                    <DataGridTextColumn Header="Nome" Binding="{Binding ClienteNome}" Width="*"/>
+                                    <DataGridTextColumn Header="Telefone" Binding="{Binding ClienteTelefone}" Width="*"/>
+                                    <DataGridTextColumn Header="Email" Binding="{Binding ClienteEmail}" Width="*"/>
+                                    <DataGridTextColumn Header="CPF" Binding="{Binding ClienteDocumento}" Width="*"/>
+                                    <DataGridTextColumn Header="Saldo" Binding="{Binding Saldo, StringFormat=C}" Width="*"/>
                                 </DataGrid.Columns>
 
                             </DataGrid>

@@ -1,4 +1,5 @@
 ﻿using System;
+using Dominio.Enum;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,6 +15,12 @@ namespace Dominio
         public int ClienteId { get; set; }
 
         public Clientes Cliente { get; set; }
+
+        [NotMapped]
+        public string ClienteNome { get; set; }
+
+        [NotMapped]
+        public string ClienteDocumento { get; set; }
 
         public DateTime DataVenda { get; set; } = DateTime.Now;
 

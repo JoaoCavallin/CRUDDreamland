@@ -8,6 +8,9 @@
         
         Height="270" Width="450" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid >
+        <Grid.Background>
+            <ImageBrush ImageSource="/Copy of DreamLand.png" Stretch="UniformToFill"/>
+        </Grid.Background>
         <TextBlock HorizontalAlignment="Center" Padding="5" FontSize="14" FontWeight="Bold" Height="34" Margin="79,22,89,0" TextWrapping="NoWrap" Text="INSIRA O NOME E O CPF DO CLIENTE" VerticalAlignment="Top" Width="274"/>
         <Label Content="NOME: " HorizontalAlignment="Left" Margin="30,61,0,0" VerticalAlignment="Top" />
         <TextBox Name="boxNomeCliente" MaxLength="30"  Margin="110,61,40,10" TextWrapping="NoWrap"  VerticalAlignment="Top"/>
